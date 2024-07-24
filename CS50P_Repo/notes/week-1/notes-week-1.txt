@@ -1,0 +1,60 @@
+Week-1 Conditionals
+
+Condtional Syntax (Python):
+    - >, >=, <, <=, ==, != (greater than, greater than or equals to, less than, less than or equal to, equals, not equals)
+    - if - Used in if-then boolean statments (if x < y: print('x is less than y'), reads as if x is less than y, then print to the terminal 'x is less than y')
+    - elif - Used for else-if-then conditionals to give early exits to control flow implementations, better than asking just a series of if-then conditonals
+    - else - Used at the end of if-then control flow implementations when all previous checks return false to give defualt behavior (or implied conditional based on assumptions from previous checks)
+
+            Only if-then control flow (worst)
+
+                x = int(input('What is x? '))
+                y = int(input('What is y? '))
+
+                if x < y:
+                    print('x is less than y ')
+                if x > y:
+                    print('x is greater than y ')
+                if x == y:
+                    print('x is equal to y ')
+
+            if-else-then control flow (not worst but not optimal)
+
+                x = int(input('What is x? '))
+                y = int(input('What is y? '))
+
+                if x < y:
+                    print('x is less than y ')
+                elif x > y:
+                    print('x is greater than y ')
+                elif x == y:
+                    print('x is equal to y ')
+
+            if-else.....else(final)-then control flow (best)
+
+                x = int(input('What is x? '))
+                y = int(input('What is y? '))
+
+                if x < y:
+                    print('x is less than y ')
+                elif x > y:
+                    print('x is greater than y ')
+                else:
+                    print('x is equal to y ')
+
+    - Notice the difference in syntax between the different forms which allow early exits and the final one which gives default behavior if all other checks return false (in this case since we know from x == y from previous checks we dont even check for it)
+    - or - what the tin says, or statement for boolean values/assesments, will output a true boolean value if one or both inputs are true themselves, and false if and only if both inputs are false
+    - and - and boolean operator, will return a true boolean value if and only if both input values are true, all other input combos will output false (ie both have to be true)
+    - != - assesment of 'not equal' will output a true value if compared compared values are not equivalent and vice versa
+    - Boolean values (true, false) - values returned when assessing boolean operators (if x > y and x < y, will always return false as it is a logical contradiction as both cant be true thus the expression is always false with the use of an and operator)
+    - match - an alternative for if-then/if-else control flows with slightly different syntax:
+
+            match name:
+                case 'Harry' | 'Hermione' | 'Ron':
+                    print('Gryffindor')
+                case 'Draco':
+                    print('Slytherin')
+                case _:
+                    print('Who?')
+
+    - allows for multiple inputs that fall under the same output to be grouped in a way that avoids repetitive code as would of happened with if-else statements

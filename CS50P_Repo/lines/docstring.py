@@ -1,0 +1,2 @@
+"""Doc string"""
+'''Doc string'''
