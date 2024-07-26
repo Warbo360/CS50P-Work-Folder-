@@ -21,6 +21,7 @@ def convert(csv_in, csv_out):
             reader = csv.DictReader(input_file)
             for row in reader:
                 last, first = row['name'].split(',')
+                first = first.strip()
                 unqiue_student = {'first': first, 'last': last, 'house': row['house']}
                 list_of_students.append(unqiue_student)
     except FileNotFoundError:
