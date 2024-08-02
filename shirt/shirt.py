@@ -1,5 +1,6 @@
 import sys
-#import Pillow
+from PIL import Image 
+from PIL import ImageOps
 
 def main():
     if len(sys.argv) < 3:
@@ -13,11 +14,13 @@ def main():
     else:
         edit(sys.argv[1], sys.argv[2]) # CLI args added after calling program in CLI [1] to be file to read, [2] to be the write file
 
-#def edit(input, output):
-#    try:
-#    #some chunk of code that takes input pic and input shirt pic and edits shirt in place of person
-#    except FileNotFoundError:
-#        sys.exit('File does not exist')
+def edit(input, output):
+    shirt = Image.open('shirt.png')
+    size = shirt.size
+    with Image.open(input) as im:
+        ImageOps.fit(im, size)
+        im.paste(shirt, shirt)
+        im.save(output)
 
 if __name__ == '__main__':
     main()
