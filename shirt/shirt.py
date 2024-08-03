@@ -18,7 +18,7 @@ def edit(input, output):
     shirt = Image.open('shirt.png')
     size = shirt.size
     with Image.open(input) as im:
-        ImageOps.fit(im, size)
+        im = ImageOps.fit(im, size)
         im.paste(shirt, shirt)
         im.save(output)
 
