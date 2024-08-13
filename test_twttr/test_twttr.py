@@ -24,3 +24,6 @@ def test_shorten_space():
 
 def test_shorten_no_numbers():
     assert shorten('123') == '123'
+
+if __name__ == '__main__':
+    main()
