@@ -7,7 +7,7 @@ def main():
 
 
 def count(s):
-    count = re.findall(r'\b[?.,]*[Uu]m[?.,]*', s)
+    count = re.findall(r'\b[?.,]*[Uu]m[?.,]*\b', s)
     return len(count)
 
 if __name__ == "__main__":
