@@ -13,10 +13,7 @@ def get_age(birth_day):
     except ValueError:
         sys.exit('Invalid date, input as YYYY-MM-DD')
     else:
-        age = age/60
-        age = int(age.total_seconds())
-        print(age)
-        return f'{p.number_to_words(age, andword="")} minutes'
+        return f'{p.number_to_words(int(age.total_seconds()/60), andword="")} minutes'
 
 if __name__ == "__main__":
     main()
