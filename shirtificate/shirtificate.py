@@ -14,7 +14,7 @@ def shirt_png_to_pdf(str):
     output_pdf.set_font('helvetica', 'B', 22)
     output_pdf.set_text_color(255, 255, 255)
     output_pdf.cell(None, 280, text=f'{str} took CS50', align='C', center=True)
-    output_pdf.output(f'{str}-shirtificate.pdf')
+    output_pdf.output(f'shirtificate.pdf')
 
 
 if __name__ == '__main__':
