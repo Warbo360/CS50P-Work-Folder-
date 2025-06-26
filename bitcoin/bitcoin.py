@@ -2,11 +2,12 @@ import sys
 import requests
 import json
 
+
 def main():
     bitCoinInput = 0
     if len(sys.argv) == 2:
         try:
-           bitCoinInput = float(sys.argv[1])
+            bitCoinInput = float(sys.argv[1])
         except ValueError:
             sys.exit('Command-line argument is not a number')
     else:
@@ -20,9 +21,11 @@ def main():
         rate = float(strip_middle_characters(rate.strip('"'), ','))
         print(f'${rate * bitCoinInput:,.4f}')
 
+
 def strip_middle_characters(str, sep):
     str = str.partition(sep)
     str = str[0] + str[2]
     return str
+
 
 main()
