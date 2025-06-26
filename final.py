@@ -2,6 +2,27 @@ import sys
 
 
 def main():
+    if len(sys.argv) == 2:
+        auto_gen((results_pull(sys.argv[1])))
+    elif len(sys.argv) < 2:
+        manual_gen()
+    else:
+        sys.exit('Too many arguments')
+
+# Will pull results straight from file in CLI args
 
 
+def results_pull(file):
+    return (file)
 
+
+def manual_gen():
+    print('Make your own results')
+
+
+def auto_gen(file_test):
+    print(file_test)
+
+
+if __name__ == "__main__":
+    main()
