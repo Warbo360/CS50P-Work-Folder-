@@ -2,7 +2,7 @@ import sys
 from openpyxl import load_workbook
 
 
-wb = load_workbook(filename='empty_book.xlsx')
+wb = load_workbook(filename='empty_book.xlsx', read_only=True)
 # Practice using openpyxl to access Excel file
 
 
