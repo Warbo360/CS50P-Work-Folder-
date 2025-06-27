@@ -1,4 +1,9 @@
 import sys
+from openpyxl import load_workbook
+
+
+wb = load_workbook(filename='empty_book.xlsx')
+# Practice using openpyxl to access Excel file
 
 
 def main():
@@ -16,12 +21,12 @@ def results_pull(file):
     return (file)
 
 
-def manual_gen():
-    print('Make your own results')
-
-
 def auto_gen(file_test):
     print(file_test)
+
+
+def manual_gen():
+    print('Make your own results')
 
 
 if __name__ == "__main__":
