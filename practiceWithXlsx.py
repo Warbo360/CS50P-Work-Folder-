@@ -1,26 +1,25 @@
 from openpyxl import load_workbook
+import sys
+import re
 
 
 def main():
-    wb = load_workbook(filename='Cleaning Samples Template.xlsx')
+    get_ws()
+    wb = load_workbook(filename=sys.argv[1])
     ws = wb.active
     APQL = get_APQL(ws)
     num_of_samples = get_sample_num(ws)
+    A_num = get_A_num(ws)
     i = 0
     while i < num_of_samples:
         print(f'''
               Sample ID XXXXXXXXXX XXXX
               Appearance & Color: Clear and Colorless
-              A-XXXXXXXX: Not detected. Reported as "<{APQL} ug/mL (APQL).".
+              {A_num}: Not detected. Reported as "<{APQL} ug/mL (APQL).".
               Other Peak(s): Not detected.
-              Total(A-XXXXXXX + Other Peak(s)): Reported as "<{APQL} ug/mL (APQL).".
+              Total({A_num} + Other Peak(s)): Reported as "<{APQL} ug/mL (APQL).".
               ''')
         i = i + 1
-
-    # j = 0
-    # while j < num_of_samples:
-    #     print(f'This is a test, here is {APQL}\n')
-    #     j = j + 1
 
 
 def get_APQL(worksheet):
@@ -35,6 +34,25 @@ def get_sample_num(worksheet):
         for ind in range(len(rows)):
             if rows[ind] == "Sample #:":
                 return float(rows[ind+1])
+
+
+def get_A_num(worksheet):
+    for rows in worksheet.values:
+        for ind in range(len(rows)):
+            if rows[ind] == "Target-Analyte":
+                try:
+                    return rows[ind+1]
+                except ValueError:
+                    sys.exit('Target-Analyte is not a string value')
+
+
+def get_ws(filename):
+    if "*.xlsx" in filename:
+        try:
+            wb = load_workbook(filename=sys.argv[1]) # Spreadsheet should only have one sheet
+            return wb.active
+        except FileNotFoundError:
+            sys.exit('File not found!')
 
 
 main()
