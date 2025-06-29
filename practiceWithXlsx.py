@@ -9,17 +9,31 @@ def main():
     num_of_samples = get_sample_num(ws)
     A_num = get_A_num(ws)
     swabs = determine_swabs(ws)
-    # statement_gen(num_of_samples, APQL, A_num)
 
 
-def statement_gen(sample_number, limit, analyte, sample_list):
-    i = 0
-    while i < sample_number:
-        i = i + 1
+# TODO: Finish writing statment generator function
+def statement_gen_rinse(limit, samples_list, analyte):
+    ...
+
+
+# Gather Swab APQL info return that info as a list of dicts
+def get_swab_APQL(worksheet):
+    material_APQLs = []
+    for rows in worksheet.iter_rows(min_row=2, max_row=9, min_col=4, max_col=5, values_only=True):
+        if rows[0] and isinstance(rows[1], (int, float)):
+            material_APQLs.append({
+                'Material': rows[0],
+                'APQL': rows[1]
+                })
+        elif not rows[0] and not rows[1]:
+            continue
+        else:
+            print(f'Please check the row of the {rows[0]} entry and that its inforamation is correct')
+    return material_APQLs
 
 
 # Gathers sample data and arranges it into a list of dicts
-def sample_info_gatherer(worksheet):
+def get_sample_data(worksheet):
     sample_list = []
     for rows in worksheet.iter_rows(min_row=14, max_col=6, values_only=True):
         sample_list.append({
