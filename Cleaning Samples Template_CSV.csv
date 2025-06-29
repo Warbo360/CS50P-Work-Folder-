@@ -1,0 +1,15 @@
+"Sample Set:","betzjwx_ELN_AttemptID",,,,
+"Sample Set ID: ","Example ID XXXXXX",,,,
+"Result Set ID:","Example ID XXXXXX",,,,
+"Path: ","ARD/NCE_2024/Rest/Of/Path",,,,
+"Target-Analyte","A-1968666.0",,,,
+"APQL:",0.016,,,,
+"Sample #:",5,,,,
+,,,,,
+"Sample Set data",,,,,
+"Sample ID","Sample Type","Material (Swabs Only)","Appearance","A# ug/mL","Other peak(s) Give as comma sperated values of conc"
+1,"Blank","N/A","Pass",0.16,"6.23, 2.15, 0.015, 8.23"
+2,"Sample  ","Stainless Steel","Fail",0.16,2.1
+3,"Sample  ","Delrin","et","etc",
+4,"Sample  ","etc","etc","etc",
+5,"Sample  ","etc","etc","etc",

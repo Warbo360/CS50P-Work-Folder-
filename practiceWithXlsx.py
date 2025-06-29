@@ -3,26 +3,39 @@ import sys
 import re
 
 
+samples = []
+
+
 def main():
     ws = get_ws(sys.argv[1])
-    for rows in ws.values:
-        for ind in range(len(rows)):
-            if rows[ind] == "Sample ID":
-                print(rows)
-    rows = ws.values
-    APQL = get_APQL(ws)
-    num_of_samples = get_sample_num(ws)
-    A_num = get_A_num(ws)
-    # i = 0
-    # while i < num_of_samples:
-    #     print(f'''
-    #           Sample ID XXXXXXXXXX XXXX
-    #           Appearance & Color: Clear and Colorless
-    #           {A_num}: Not detected. Reported as "<{APQL} ug/mL (APQL).".
-    #           Other Peak(s): Not detected.
-    #           Total({A_num} + Other Peak(s)): Reported as "<{APQL} ug/mL (APQL).".
-    #           ''')
-    #     i = i + 1
+    # APQL = get_APQL(ws)
+    # num_of_samples = get_sample_num(ws)
+    # A_num = get_A_num(ws)
+    # statement_gen(num_of_samples, APQL, A_num)
+    for rows in ws.iter_rows(min_row=11, max_col=6, values_only=True):
+        # print(rows)
+        # print(rows[0])
+        samples.append({
+            'Sample ID': rows[0],
+            'Sample Type': rows[1],
+            'Material': rows[2],
+            'Appearance': rows[3],
+            'A-Result': rows[4],
+            'Other-Peak(s)': rows[5]
+        })
+    print(samples[0])
+
+
+def statement_gen(sample_number, limit, analyte):
+    i = 0
+    while i < sample_number:
+        print('''
+              Sample ID XXXXXXXXXX XXXX
+              Appearance & Color: Clear and Colorless
+              {analyte}: Not detected. Reported as "<{limit} ug/mL (APQL).".
+              Other Peak(s): Not detected.
+              Total({analyte} + Other Peak(s)): Reported as "<{limit} ug/mL (APQL).".''')
+        i = i + 1
 
 
 def get_APQL(worksheet):
