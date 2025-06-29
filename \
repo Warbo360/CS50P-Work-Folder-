@@ -1,0 +1,84 @@
+from openpyxl import load_workbook  # Allows reading and writing speadsheet files
+import sys
+import re
+
+
+samples = []
+
+
+def main():
+    ws = get_ws(sys.argv[1])
+    # APQL = get_APQL(ws)
+    # num_of_samples = get_sample_num(ws)
+    # A_num = get_A_num(ws)
+    swabs = determine_swabs(ws)
+    print(swabs)
+    print(type(ws['B8'].value))
+    print(str(ws['B8'].value).strip().lower)
+    # statement_gen(num_of_samples, APQL, A_num)
+    for rows in ws.iter_rows(min_row=11, max_col=6, values_only=True):
+        # print(rows)
+        # print(rows[0])
+        samples.append({
+            'Sample ID': rows[0],
+            'Sample Type': rows[1],
+            'Material': rows[2],
+            'Appearance': rows[3],
+            'A-Result': rows[4],
+            'Other-Peak(s)': rows[5]
+        })
+    print(samples[0])
+
+
+def statement_gen(sample_number, limit, analyte, sample_list):
+    i = 0
+    while i < sample_number:
+        i = i + 1
+
+
+def get_APQL(worksheet):
+    for rows in worksheet.values:
+        for ind in range(len(rows)):
+            if rows[ind] == "APQL:":
+                return float(rows[ind+1])
+
+
+def get_sample_num(worksheet):
+    for rows in worksheet.values:
+        for ind in range(len(rows)):
+            if rows[ind] == "Sample #:":
+                return float(rows[ind+1])
+
+
+def get_A_num(worksheet):
+    for rows in worksheet.values:
+        for ind in range(len(rows)):
+            if rows[ind] == "Target-Analyte":
+                try:
+                    return rows[ind+1]
+                except ValueError:
+                    sys.exit('Target-Analyte is not a string value')
+
+
+def get_ws(filename):
+    if re.search('.+.xlsx+', filename):
+        try:
+            wb = load_workbook(filename=sys.argv[1])  # Spreadsheet should only have one sheet
+            return wb.active
+        except FileNotFoundError:
+            sys.exit('File not Found!')
+    else:
+        sys.exit('File is not an ".xlsx" file')
+
+
+def determine_swabs(worksheet):
+    try:
+        if worksheet['B8'].value.strip.lower == 'yes:'
+            return True
+        else:
+            return False
+    except TypeError:
+        sys.exit('Swabs in Cell "B8" not set to yes or no')
+
+
+main()
