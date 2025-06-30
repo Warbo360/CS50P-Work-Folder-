@@ -59,16 +59,17 @@ def get_sample_data(worksheet):
             'Other-Peak(s)': rows[5]
             })
     for dicts in sample_list:
-        print(dicts['Other-Peak(s)'])
-        if len(dicts['Other-Peak(s)']) > 1:
-            other_peaks = dicts['Other-Peak(s)'].split(',')
-        else:
+        if isinstance(dicts['Other-Peak(s)'], (int, float)):
+            other_peaks = dicts['Other-Peak(s)']
+        elif not dicts['Other-Peak(s)']:
             continue
-        sum_of_peaks = 0
-        for peaks in other_peaks:
-            peaks = float(peaks)
-            sum_of_peaks = sum_of_peaks + peaks
-        dicts['Other-Peak(s)'] = sum_of_peaks
+        else:
+            other_peaks = dicts['Other-Peak(s)'].split(',')
+            sum_of_peaks = 0
+            for peaks in other_peaks:
+                peaks = float(peaks)
+                sum_of_peaks = sum_of_peaks + peaks
+                dicts['Other-Peak(s)'] = sum_of_peaks
     return sample_list
 
 
