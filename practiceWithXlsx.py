@@ -6,13 +6,27 @@ import re
 def main():
     ws = get_ws(sys.argv[1])
     APQL = get_APQL(ws)
-    num_of_samples = get_sample_num(ws)
+    # num_of_samples = get_sample_num(ws)
     A_num = get_A_num(ws)
     swabs = determine_swabs(ws)
+    statement_gen_rinse(get_APQL(ws), get_sample_data(ws), get_A_num(ws))
 
 
 # TODO: Finish writing statment generator function
 def statement_gen_rinse(limit, samples_list, analyte):
+    for dicts in samples_list:
+        if dicts['Sample Type'] == 'Blank':
+            print('This is a test')
+            print(dicts['Sample Type'])
+            if dicts['Appearance'] == 'Pass':
+                if dicts['A-Result'] < limit:
+                    print(f'''
+                          Sample {dicts['Sample ID']}
+                          Appearance & Color: Sample is clear and colorless. Reported as "Pass".
+                          {analyte}: Not detected. Reported as "Pass".
+                          Other Peak(s): {dicts['A-Result'] + dicts['Other-Peak(s)']} ug/mL
+                          ''')
+            ...
     ...
 
 
@@ -32,7 +46,7 @@ def get_swab_APQL(worksheet):
     return material_APQLs
 
 
-# Gathers sample data and arranges it into a list of dicts
+# Gathers sample data and arranges it into a list of dicts, also automatically converts 'Other-Peak(s)' into one float
 def get_sample_data(worksheet):
     sample_list = []
     for rows in worksheet.iter_rows(min_row=14, max_col=6, values_only=True):
@@ -44,28 +58,39 @@ def get_sample_data(worksheet):
             'A-Result': rows[4],
             'Other-Peak(s)': rows[5]
             })
+    for dicts in sample_list:
+        print(dicts['Other-Peak(s)'])
+        if len(dicts['Other-Peak(s)']) > 1:
+            other_peaks = dicts['Other-Peak(s)'].split(',')
+        else:
+            continue
+        sum_of_peaks = 0
+        for peaks in other_peaks:
+            peaks = float(peaks)
+            sum_of_peaks = sum_of_peaks + peaks
+        dicts['Other-Peak(s)'] = sum_of_peaks
     return sample_list
 
 
 # Gets the value of APQL
 def get_APQL(worksheet):
     if isinstance(worksheet['B6'].value, float):
-        return worksheet['B6']
+        return worksheet['B6'].value
     elif isinstance(worksheet['B6'].value, int):
-        return worksheet['B6']
+        return worksheet['B6'].value
     else:
         sys.exit('APQL is not set to a numerical value. Please fix and try again.')
 
 
 # Gets the number of samples
-def get_sample_num(worksheet):
-    try:
-        if worksheet['B7'].value.is_integer():
-            return worksheet['B7'].value
-        else:
-            sys.exit('Sample number is not set as an integer. Please fix and try again')
-    except AttributeError:
-        sys.exit('Sample number has non-numeric characters. Please fix and try again.')
+# def get_sample_num(worksheet):
+#     try:
+#         if worksheet['B7'].value.is_integer():
+#             return worksheet['B7'].value
+#         else:
+#             sys.exit('Sample number is not set as an integer. Please fix and try again')
+#     except AttributeError:
+#         sys.exit('Sample number has non-numeric characters. Please fix and try again.')
 
 
 # Gets name of target analyte
