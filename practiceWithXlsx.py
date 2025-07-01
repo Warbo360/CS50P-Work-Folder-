@@ -9,25 +9,25 @@ def main():
     # num_of_samples = get_sample_num(ws)
     A_num = get_A_num(ws)
     swabs = determine_swabs(ws)
-    statement_gen_rinse(get_APQL(ws), get_sample_data(ws), get_A_num(ws))
+    # statement_gen_rinse(get_APQL(ws), get_sample_data(ws), get_A_num(ws))
+    sample_set_org(determine_swabs(ws), get_swab_APQL(ws), get_A_num(ws), get_APQL(ws), get_sample_data(ws))
 
 
 # TODO: Finish writing statment generator function
-def statement_gen_rinse(limit, samples_list, analyte):
-    for dicts in samples_list:
-        if dicts['Sample Type'] == 'Blank':
-            print('This is a test')
-            print(dicts['Sample Type'])
-            if dicts['Appearance'] == 'Pass':
-                if dicts['A-Result'] < limit:
-                    print(f'''
-                          Sample {dicts['Sample ID']}
-                          Appearance & Color: Sample is clear and colorless. Reported as "Pass".
-                          {analyte}: Not detected. Reported as "Pass".
-                          Other Peak(s): {dicts['A-Result'] + dicts['Other-Peak(s)']} ug/mL
-                          ''')
-            ...
+def statement_gen_rinse(sample_set_list):
     ...
+
+
+def sample_set_org(swab_state, swab_limits, analyte, limit, sample_list):
+    sample_set_info = {}
+    if swab_state:
+        sample_set_info['Limit'] = swab_limits
+    else:
+        sample_set_info['Limit'] = limit
+    sample_set_info['Analyte'] = analyte
+    sample_set_info['Sample List'] = sample_list
+    print(sample_set_info)
+    return sample_set_info
 
 
 # Gather Swab APQL info return that info as a list of dicts
