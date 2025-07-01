@@ -9,16 +9,44 @@ def main():
     # num_of_samples = get_sample_num(ws)
     A_num = get_A_num(ws)
     swabs = determine_swabs(ws)
-    # statement_gen_rinse(get_APQL(ws), get_sample_data(ws), get_A_num(ws))
-    sample_set_org(determine_swabs(ws), get_swab_APQL(ws), get_A_num(ws), get_APQL(ws), get_sample_data(ws))
+    the_list =  sample_set_org(determine_swabs(ws), get_swab_APQL(ws), get_A_num(ws), get_APQL(ws), get_sample_data(ws))
+    print(sample_set_org(determine_swabs(ws), get_swab_APQL(ws), get_A_num(ws), get_APQL(ws), get_sample_data(ws)))
+    # print(the_list['Limit'][0]['Material'].lower())
+    statement_gen_rinse(sample_set_org(determine_swabs(ws), get_swab_APQL(ws), get_A_num(ws), get_APQL(ws), get_sample_data(ws)))
 
 
 # TODO: Finish writing statment generator function
 def statement_gen_rinse(sample_set_dict):
-    for lists in sample_set_dict:
-        if lists['Analyte'].lower() == 'blank':
-            print('I\'m a blank')
-    ...
+    if isinstance(sample_set_dict['Limit'], (int, float)):
+        print('I\'m a rinse!')
+    else:
+        print('I\'m a swab!')
+    for dicts in sample_set_dict['Sample List']:
+        if dicts['Sample Type'].lower() == 'blank' and \
+           dicts['Appearance'].lower() == 'pass' and \
+           isinstance(sample_set_dict['Limit'], (int, float)) and \
+           dicts['A-Result'] < sample_set_dict['Limit'] and \
+           dicts['Other-Peak(s)']:
+            # for peaks in dicts['Other-Peak(s)'].split(','):
+        # if dicts['Sample Type'].lower() == 'blank':
+        #     if dicts['Appearance'].lower() == 'pass':
+        #         if isinstance(sample_set_dict['Limit'], (int, float)): 
+        #             if dicts['A-Result'] < sample_set_dict['Limit']:
+        #                 if dicts['Other-Peak(s)']:
+                            # for peaks in dicts['Other-Peak(s)'].split(','):
+                            print(f'''
+{dicts['Sample ID']} Blank
+Appearance and Color: Clear and Colorless. Reported as "Pass".
+{sample_set_dict['Analyte']}: Peak not detected. Reported as "Pass".
+Other Peak(s): Not detected. Reported as "Pass'.
+                            ''')
+        else:
+                            print(f'''
+{dicts['Sample ID']} Blank
+Appearance and Color: Clear and Colorless. Reported as "Pass".
+{sample_set_dict['Analyte']}: Peak not detected. Reported as "Pass".
+Other Peak(s): Not detected. Reported as "Pass'.
+''')
 
 
 # Makes a dict out of relevant sample set info
@@ -86,7 +114,6 @@ def get_sample_data(worksheet):
             sum_of_total_peaks = sum_of_peaks + float(dicts['A-Result'])
             dicts['Summed-Other-Peak(s)'] = sum_of_peaks
             dicts['Summed-Total-Peak(s)'] = sum_of_total_peaks
-    print(sample_list)
     return sample_list
 
 
