@@ -14,10 +14,14 @@ def main():
 
 
 # TODO: Finish writing statment generator function
-def statement_gen_rinse(sample_set_list):
+def statement_gen_rinse(sample_set_dict):
+    for lists in sample_set_dict:
+        if lists['Analyte'].lower() == 'blank':
+            print('I\'m a blank')
     ...
 
 
+# Makes a dict out of relevant sample set info
 def sample_set_org(swab_state, swab_limits, analyte, limit, sample_list):
     sample_set_info = {}
     if swab_state:
@@ -26,7 +30,6 @@ def sample_set_org(swab_state, swab_limits, analyte, limit, sample_list):
         sample_set_info['Limit'] = limit
     sample_set_info['Analyte'] = analyte
     sample_set_info['Sample List'] = sample_list
-    print(sample_set_info)
     return sample_set_info
 
 
@@ -56,20 +59,34 @@ def get_sample_data(worksheet):
             'Material': rows[2],
             'Appearance': rows[3],
             'A-Result': rows[4],
-            'Other-Peak(s)': rows[5]
+            'Other-Peak(s)': rows[5],
             })
     for dicts in sample_list:
         if isinstance(dicts['Other-Peak(s)'], (int, float)):
-            other_peaks = dicts['Other-Peak(s)']
+            dicts['Summed-Other-Peak(s)'] = dicts['Other-Peak(s)']
+            try:
+                dicts['Summed-Total-Peak(s)'] = dicts['Other-Peak(s)'] + dicts['A-Result']
+            except TypeError:
+                sys.exit('An "A-Result" entry is non-numerical. Please fix and try again.')
         elif not dicts['Other-Peak(s)']:
-            continue
+            dicts['Summed-Other-Peak(s)'] = dicts['Other-Peak(s)']
+            try:
+                dicts['Summed-Total-Peak(s)'] = dicts['A-Result']
+            except TypeError:
+                sys.exit('An "A-Result" entry is non-numerical. Please fix and try again.')
         else:
-            other_peaks = dicts['Other-Peak(s)'].split(',')
+            try:
+                other_peaks = dicts['Other-Peak(s)'].split(',')
+            except TypeError:
+                sys.exit('One of more "Other-Peak(s)" entries are non-numerical values, please fix and try again')
             sum_of_peaks = 0
             for peaks in other_peaks:
                 peaks = float(peaks)
                 sum_of_peaks = sum_of_peaks + peaks
-                dicts['Other-Peak(s)'] = sum_of_peaks
+            sum_of_total_peaks = sum_of_peaks + float(dicts['A-Result'])
+            dicts['Summed-Other-Peak(s)'] = sum_of_peaks
+            dicts['Summed-Total-Peak(s)'] = sum_of_total_peaks
+    print(sample_list)
     return sample_list
 
 
@@ -84,14 +101,14 @@ def get_APQL(worksheet):
 
 
 # Gets the number of samples
-# def get_sample_num(worksheet):
-#     try:
-#         if worksheet['B7'].value.is_integer():
-#             return worksheet['B7'].value
-#         else:
-#             sys.exit('Sample number is not set as an integer. Please fix and try again')
-#     except AttributeError:
-#         sys.exit('Sample number has non-numeric characters. Please fix and try again.')
+def get_sample_num(worksheet):
+    try:
+        if worksheet['B7'].value.is_integer():
+            return worksheet['B7'].value
+        else:
+            sys.exit('Sample number is not set as an integer. Please fix and try again')
+    except AttributeError:
+        sys.exit('Sample number has non-numeric characters. Please fix and try again.')
 
 
 # Gets name of target analyte
