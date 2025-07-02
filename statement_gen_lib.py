@@ -1,5 +1,73 @@
 # Lib for functions that generate sample statment, takes a dict of dicts as inputs
 
+
+# wrapper function that checks to see if APQLs given correlate to swabs or not
+# then comparative logic that points each entru to its associated statment generator
+def rinse_sample_gen(sample_list):
+    for dicts in sample_list['Sample List']:
+# Permutation of all passing blank sample
+        if (dicts['Sample Type'].lower().strip() == 'blank' and
+        dicts['Appearance'].lower().strip() == 'pass' and
+        isinstance(sample_list['Limit'], (int, float)) and
+        dicts['A-Result'] < sample_list['Limit']):
+            passing_rinse_blank(sample_list, dicts)
+# Permutation of all passing except appearance for blank rinse sample
+        elif (dicts['Sample Type'].lower().strip() == 'blank' and
+        dicts['Appearance'].lower().strip() == 'fail' and
+        isinstance(sample_list['Limit'], (int, float)) and
+        dicts['A-Result'] < sample_list['Limit']):
+            pass_fail_rinse_blank(sample_list, dicts)
+# Permutation of failing blank but passing appearance
+        elif (dicts['Sample Type'].lower().strip() == 'blank' and
+        dicts['Appearance'].lower().strip() == 'pass' and
+        isinstance(sample_list['Limit'], (int, float)) and
+        dicts['A-Result'] > sample_list['Limit']):
+            fail_pass_rinse_blank(sample_list, dicts)
+# Permuation of failing appearance and A Result for blanks
+        elif (dicts['Sample Type'].lower().strip() == 'blank' and
+        dicts['Appearance'].lower().strip() == 'fail' and
+        isinstance(sample_list['Limit'], (int, float)) and
+        dicts['A-Result'] > sample_list['Limit']):
+            fail_rinse_blank(sample_list, dicts)
+# Permuation of all passing normal rinse samp with A-Result not detected (excel cell = 0)
+        elif (dicts['Sample Type'].lower().strip() == 'sample' and
+        dicts['Appearance'].lower().strip() == 'pass' and
+        isinstance(sample_list['Limit'], (int, float)) and
+        dicts['A-Result'] == 0):
+            zero_pass_rinse_sample(sample_list, dicts)
+# Permutation of passing rinse with detected A-result but still less than APQL
+        elif (dicts['Sample Type'].lower().strip() == 'sample' and
+        dicts['Appearance'].lower().strip() == 'pass' and
+        isinstance(sample_list['Limit'], (int, float)) and
+        sample_list['Limit'] > dicts['A-Result'] > 0):
+            less_APQL_pass_rinse_sample(sample_list, dicts)
+# Permutation of passing rinse sample with A-result greather than or equal to APQL
+        elif (dicts['Sample Type'].lower().strip() == 'sample' and
+        dicts['Appearance'].lower().strip() == 'pass' and
+        isinstance(sample_list['Limit'], (int, float)) and
+        dicts['A-Result'] >= sample_list['Limit']):
+            greater_APQL_pass_rinse_sample(sample_list, dicts)
+# Permutation of failng Appearance and AR not detected rinse sample
+        elif (dicts['Sample Type'].lower().strip() == 'sample' and
+        dicts['Appearance'].lower().strip() == 'fail' and
+        isinstance(sample_list['Limit'], (int, float)) and
+        dicts['A-Result'] == 0):
+            zero_fail_rinse_sample(sample_list, dicts)
+# Permuatatuon of failong Appearance and AP < APQL rinse sample
+        elif (dicts['Sample Type'].lower().strip() == 'sample' and
+        dicts['Appearance'].lower().strip() == 'fail' and
+        isinstance(sample_list['Limit'], (int, float)) and
+        sample_list['Limit'] > dicts['A-Result'] > 0):
+            less_APQL_fail_rinse_sample(sample_list, dicts)
+# Permutation of failing Appearance and AR >= APQL rinse sample
+        elif (dicts['Sample Type'].lower().strip() == 'sample' and
+        dicts['Appearance'].lower().strip() == 'fail' and
+        isinstance(sample_list['Limit'], (int, float)) and
+        dicts['A-Result'] >= sample_list['Limit']):
+            greater_APQL_fail_rinse_sample(sample_list, dicts)
+        
+
+
 # Passing rinse blank perm
 def passing_rinse_blank(sample_list, dicts):
     if isinstance(dicts['Other-Peak(s)'], (int, float)):
