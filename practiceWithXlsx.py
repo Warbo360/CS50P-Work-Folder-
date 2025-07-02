@@ -22,30 +22,119 @@ def statement_gen_rinse(sample_set_dict):
     else:
         print('I\'m a swab!')
     for dicts in sample_set_dict['Sample List']:
-        if dicts['Sample Type'].lower() == 'blank' and \
-           dicts['Appearance'].lower() == 'pass' and \
-           isinstance(sample_set_dict['Limit'], (int, float)) and \
-           dicts['A-Result'] < sample_set_dict['Limit'] and \
-           dicts['Other-Peak(s)']:
-            # for peaks in dicts['Other-Peak(s)'].split(','):
-        # if dicts['Sample Type'].lower() == 'blank':
-        #     if dicts['Appearance'].lower() == 'pass':
-        #         if isinstance(sample_set_dict['Limit'], (int, float)): 
-        #             if dicts['A-Result'] < sample_set_dict['Limit']:
-        #                 if dicts['Other-Peak(s)']:
-                            # for peaks in dicts['Other-Peak(s)'].split(','):
-                            print(f'''
+# Permutation of all passing blank sample
+        if (dicts['Sample Type'].lower() == 'blank' and
+           dicts['Appearance'].lower() == 'pass' and
+           isinstance(sample_set_dict['Limit'], (int, float)) and
+           dicts['A-Result'] < sample_set_dict['Limit']):
+            if isinstance(dicts['Other-Peak(s)'], (int, float)):
+                print(f'''
 {dicts['Sample ID']} Blank
 Appearance and Color: Clear and Colorless. Reported as "Pass".
 {sample_set_dict['Analyte']}: Peak not detected. Reported as "Pass".
-Other Peak(s): Not detected. Reported as "Pass'.
-                            ''')
-        else:
-                            print(f'''
+Other Peak(s): {dicts['Other-Peak(s)']} ug/mL. Reported as "Pass".
+Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/mL.
+''')
+            elif isinstance(dicts['Other-Peak(s)'], str):
+                print(f'''
 {dicts['Sample ID']} Blank
 Appearance and Color: Clear and Colorless. Reported as "Pass".
 {sample_set_dict['Analyte']}: Peak not detected. Reported as "Pass".
-Other Peak(s): Not detected. Reported as "Pass'.
+Other Peak(s): {' ug/mL,'.join(dicts['Other-Peak(s)'].split(','))} ug/mL. Reported as "Pass".
+Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/mL.
+''')
+            else:
+                print(f'''
+{dicts['Sample ID']} Blank
+Appearance and Color: Clear and Colorless. Reported as "Pass".
+{sample_set_dict['Analyte']}: Peak not detected. Reported as "Pass".
+Other Peak(s): Not detected. Reported as "Pass".
+''')
+# Permutation of all passing except appearance for blank rinse sample
+        elif (dicts['Sample Type'].lower() == 'blank' and
+           dicts['Appearance'].lower() == 'fail' and
+           isinstance(sample_set_dict['Limit'], (int, float)) and
+           dicts['A-Result'] < sample_set_dict['Limit']):
+            if isinstance(dicts['Other-Peak(s)'], (int, float)):
+                print(f'''
+{dicts['Sample ID']} Blank
+Appearance and Color: Clear and Colorless. Reported as "Fail".
+{sample_set_dict['Analyte']}: Peak not detected. Reported as "Pass".
+Other Peak(s): {dicts['Other-Peak(s)']} ug/mL. Reported as "Pass".
+Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/mL.
+''')
+            elif isinstance(dicts['Other-Peak(s)'], str):
+                print(f'''
+{dicts['Sample ID']} Blank
+Appearance and Color: Clear and Colorless. Reported as "Fail".
+{sample_set_dict['Analyte']}: Peak not detected. Reported as "Pass".
+Other Peak(s): {' ug/mL,'.join(dicts['Other-Peak(s)'].split(','))} ug/mL. Reported as "Pass".
+Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/mL.
+''')
+            else:
+                print(f'''
+{dicts['Sample ID']} Blank
+Appearance and Color: Clear and Colorless. Reported as "Fail".
+{sample_set_dict['Analyte']}: Peak not detected. Reported as "Pass".
+Other Peak(s): Not detected. Reported as "Pass".
+''')
+# Permutation of failing blank but passing appearance
+        elif (dicts['Sample Type'].lower() == 'blank' and
+           dicts['Appearance'].lower() == 'pass' and
+           isinstance(sample_set_dict['Limit'], (int, float)) and
+           dicts['A-Result'] > sample_set_dict['Limit']):
+            if isinstance(dicts['Other-Peak(s)'], (int, float)):
+                print(f'''
+{dicts['Sample ID']} Blank
+Appearance and Color: Clear and Colorless. Reported as "Pass".
+{sample_set_dict['Analyte']}: Peak detected at {dicts['A-Result']} ug/mL. Reported as "Fail".
+Other Peak(s): {dicts['Other-Peak(s)']} ug/mL. Reported as "Fail".
+Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/mL.
+''')
+            elif isinstance(dicts['Other-Peak(s)'], str):
+                print(f'''
+{dicts['Sample ID']} Blank
+Appearance and Color: Clear and Colorless. Reported as "Pass".
+{sample_set_dict['Analyte']}: Peak detected at {dicts['A-Result']} ug/mL. Reported as "Fail".
+Other Peak(s): {' ug/mL,'.join(dicts['Other-Peak(s)'].split(','))} ug/mL. Reported as "Fail".
+Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Total-Peak(s)']} ug/mL.
+''')
+            else:
+                print(f'''
+{dicts['Sample ID']} Blank
+Appearance and Color: Clear and Colorless. Reported as "Pass".
+{sample_set_dict['Analyte']}: Peak detected at {dicts['A-Result']} ug/mL. Reported as "Fail".
+Other Peak(s): Not detected. Reported as "Pass".
+Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['A-Result']} ug/mL.
+''')
+# Permuation of failing appearance and A Result for blanks
+        elif (dicts['Sample Type'].lower() == 'blank' and
+           dicts['Appearance'].lower() == 'fail' and
+           isinstance(sample_set_dict['Limit'], (int, float)) and
+           dicts['A-Result'] > sample_set_dict['Limit']):
+            if isinstance(dicts['Other-Peak(s)'], (int, float)):
+                print(f'''
+{dicts['Sample ID']} Blank
+Appearance and Color: Clear and Colorless. Reported as "Fail".
+{sample_set_dict['Analyte']}: Peak detected at {dicts['A-Result']} ug/mL. Reported as "Fail".
+Other Peak(s): {dicts['Other-Peak(s)']} ug/mL. Reported as "Fail".
+Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/mL.
+''')
+            elif isinstance(dicts['Other-Peak(s)'], str):
+                print(f'''
+{dicts['Sample ID']} Blank
+Appearance and Color: Clear and Colorless. Reported as "Fail".
+{sample_set_dict['Analyte']}: Peak detected at {dicts['A-Result']} ug/mL. Reported as "Fail".
+Other Peak(s): {' ug/mL,'.join(dicts['Other-Peak(s)'].split(','))} ug/mL. Reported as "Fail".
+Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Total-Peak(s)']} ug/mL.
+''')
+            else:
+                print(f'''
+{dicts['Sample ID']} Blank
+Appearance and Color: Clear and Colorless. Reported as "Fail".
+{sample_set_dict['Analyte']}: Peak detected at {dicts['A-Result']} ug/mL. Reported as "Fail".
+Other Peak(s): Not detected. Reported as "Fail".
+Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['A-Result']} ug/mL.
 ''')
 
 
