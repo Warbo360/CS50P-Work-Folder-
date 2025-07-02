@@ -108,14 +108,16 @@ def get_swab_APQL(worksheet):
 def get_sample_data(worksheet):
     sample_list = []
     for rows in worksheet.iter_rows(min_row=14, max_col=6, values_only=True):
-        sample_list.append({
-            'Sample ID': rows[0],
-            'Sample Type': rows[1],
-            'Material': rows[2],
-            'Appearance': rows[3],
-            'A-Result': rows[4],
-            'Other-Peak(s)': rows[5],
-            })
+        if (rows[0] and
+            rows[1]):
+            sample_list.append({
+                'Sample ID': rows[0],
+                'Sample Type': rows[1],
+                'Material': rows[2],
+                'Appearance': rows[3],
+                'A-Result': rows[4],
+                'Other-Peak(s)': rows[5],
+                })
     for dicts in sample_list:
         if isinstance(dicts['Other-Peak(s)'], (int, float)):
             dicts['Summed-Other-Peak(s)'] = dicts['Other-Peak(s)']
@@ -141,6 +143,7 @@ def get_sample_data(worksheet):
             sum_of_total_peaks = sum_of_peaks + float(dicts['A-Result'])
             dicts['Summed-Other-Peak(s)'] = sum_of_peaks
             dicts['Summed-Total-Peak(s)'] = sum_of_total_peaks
+    print(sample_list)
     return sample_list
 
 
