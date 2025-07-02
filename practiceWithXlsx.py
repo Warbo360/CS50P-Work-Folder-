@@ -1,141 +1,79 @@
 from openpyxl import load_workbook  # Allows reading and writing speadsheet files
 import sys
 import re
+from statement_gen_lib import *
 
 
 def main():
     ws = get_ws(sys.argv[1])
-    APQL = get_APQL(ws)
-    # num_of_samples = get_sample_num(ws)
-    A_num = get_A_num(ws)
-    swabs = determine_swabs(ws)
-    the_list =  sample_set_org(determine_swabs(ws), get_swab_APQL(ws), get_A_num(ws), get_APQL(ws), get_sample_data(ws))
-    print(sample_set_org(determine_swabs(ws), get_swab_APQL(ws), get_A_num(ws), get_APQL(ws), get_sample_data(ws)))
-    # print(the_list['Limit'][0]['Material'].lower())
     statement_gen_rinse(sample_set_org(determine_swabs(ws), get_swab_APQL(ws), get_A_num(ws), get_APQL(ws), get_sample_data(ws)))
 
 
 # TODO: Finish writing statment generator function
 def statement_gen_rinse(sample_set_dict):
-    if isinstance(sample_set_dict['Limit'], (int, float)):
-        print('I\'m a rinse!')
-    else:
-        print('I\'m a swab!')
     for dicts in sample_set_dict['Sample List']:
 # Permutation of all passing blank sample
-        if (dicts['Sample Type'].lower() == 'blank' and
-           dicts['Appearance'].lower() == 'pass' and
+        if (dicts['Sample Type'].lower().strip() == 'blank' and
+           dicts['Appearance'].lower().strip() == 'pass' and
            isinstance(sample_set_dict['Limit'], (int, float)) and
            dicts['A-Result'] < sample_set_dict['Limit']):
-            if isinstance(dicts['Other-Peak(s)'], (int, float)):
-                print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as "Pass".
-{sample_set_dict['Analyte']}: Peak not detected. Reported as "Pass".
-Other Peak(s): {dicts['Other-Peak(s)']} ug/mL. Reported as "Pass".
-Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/mL.
-''')
-            elif isinstance(dicts['Other-Peak(s)'], str):
-                print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as "Pass".
-{sample_set_dict['Analyte']}: Peak not detected. Reported as "Pass".
-Other Peak(s): {' ug/mL,'.join(dicts['Other-Peak(s)'].split(','))} ug/mL. Reported as "Pass".
-Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/mL.
-''')
-            else:
-                print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as "Pass".
-{sample_set_dict['Analyte']}: Peak not detected. Reported as "Pass".
-Other Peak(s): Not detected. Reported as "Pass".
-''')
+            passing_rinse_blank(sample_set_dict, dicts)
 # Permutation of all passing except appearance for blank rinse sample
-        elif (dicts['Sample Type'].lower() == 'blank' and
-           dicts['Appearance'].lower() == 'fail' and
+        elif (dicts['Sample Type'].lower().strip() == 'blank' and
+           dicts['Appearance'].lower().strip() == 'fail' and
            isinstance(sample_set_dict['Limit'], (int, float)) and
            dicts['A-Result'] < sample_set_dict['Limit']):
-            if isinstance(dicts['Other-Peak(s)'], (int, float)):
-                print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as "Fail".
-{sample_set_dict['Analyte']}: Peak not detected. Reported as "Pass".
-Other Peak(s): {dicts['Other-Peak(s)']} ug/mL. Reported as "Pass".
-Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/mL.
-''')
-            elif isinstance(dicts['Other-Peak(s)'], str):
-                print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as "Fail".
-{sample_set_dict['Analyte']}: Peak not detected. Reported as "Pass".
-Other Peak(s): {' ug/mL,'.join(dicts['Other-Peak(s)'].split(','))} ug/mL. Reported as "Pass".
-Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/mL.
-''')
-            else:
-                print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as "Fail".
-{sample_set_dict['Analyte']}: Peak not detected. Reported as "Pass".
-Other Peak(s): Not detected. Reported as "Pass".
-''')
+            pass_fail_rinse_blank(sample_set_dict, dicts)
 # Permutation of failing blank but passing appearance
-        elif (dicts['Sample Type'].lower() == 'blank' and
-           dicts['Appearance'].lower() == 'pass' and
+        elif (dicts['Sample Type'].lower().strip() == 'blank' and
+           dicts['Appearance'].lower().strip() == 'pass' and
            isinstance(sample_set_dict['Limit'], (int, float)) and
            dicts['A-Result'] > sample_set_dict['Limit']):
-            if isinstance(dicts['Other-Peak(s)'], (int, float)):
-                print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as "Pass".
-{sample_set_dict['Analyte']}: Peak detected at {dicts['A-Result']} ug/mL. Reported as "Fail".
-Other Peak(s): {dicts['Other-Peak(s)']} ug/mL. Reported as "Fail".
-Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/mL.
-''')
-            elif isinstance(dicts['Other-Peak(s)'], str):
-                print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as "Pass".
-{sample_set_dict['Analyte']}: Peak detected at {dicts['A-Result']} ug/mL. Reported as "Fail".
-Other Peak(s): {' ug/mL,'.join(dicts['Other-Peak(s)'].split(','))} ug/mL. Reported as "Fail".
-Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Total-Peak(s)']} ug/mL.
-''')
-            else:
-                print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as "Pass".
-{sample_set_dict['Analyte']}: Peak detected at {dicts['A-Result']} ug/mL. Reported as "Fail".
-Other Peak(s): Not detected. Reported as "Pass".
-Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['A-Result']} ug/mL.
-''')
+            fail_pass_rinse_blank(sample_set_dict, dicts)
 # Permuation of failing appearance and A Result for blanks
-        elif (dicts['Sample Type'].lower() == 'blank' and
-           dicts['Appearance'].lower() == 'fail' and
+        elif (dicts['Sample Type'].lower().strip() == 'blank' and
+           dicts['Appearance'].lower().strip() == 'fail' and
            isinstance(sample_set_dict['Limit'], (int, float)) and
            dicts['A-Result'] > sample_set_dict['Limit']):
-            if isinstance(dicts['Other-Peak(s)'], (int, float)):
-                print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as "Fail".
-{sample_set_dict['Analyte']}: Peak detected at {dicts['A-Result']} ug/mL. Reported as "Fail".
-Other Peak(s): {dicts['Other-Peak(s)']} ug/mL. Reported as "Fail".
-Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/mL.
-''')
-            elif isinstance(dicts['Other-Peak(s)'], str):
-                print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as "Fail".
-{sample_set_dict['Analyte']}: Peak detected at {dicts['A-Result']} ug/mL. Reported as "Fail".
-Other Peak(s): {' ug/mL,'.join(dicts['Other-Peak(s)'].split(','))} ug/mL. Reported as "Fail".
-Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['Summed-Total-Peak(s)']} ug/mL.
-''')
-            else:
-                print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as "Fail".
-{sample_set_dict['Analyte']}: Peak detected at {dicts['A-Result']} ug/mL. Reported as "Fail".
-Other Peak(s): Not detected. Reported as "Fail".
-Total({sample_set_dict['Analyte']} + Other Peak(s)): {dicts['A-Result']} ug/mL.
-''')
+            fail_rinse_blank(sample_set_dict, dicts)
+# Permuation of all passing normal rinse samp with A-Result not detected (excel cell = 0)
+        elif (dicts['Sample Type'].lower().strip() == 'sample' and
+           dicts['Appearance'].lower().strip() == 'pass' and
+           isinstance(sample_set_dict['Limit'], (int, float)) and
+           dicts['A-Result'] == 0):
+            zero_pass_rinse_sample(sample_set_dict, dicts)
+# Permutation of passing rinse with detected A-result but still less than APQL
+        elif (dicts['Sample Type'].lower().strip() == 'sample' and
+           dicts['Appearance'].lower().strip() == 'pass' and
+           isinstance(sample_set_dict['Limit'], (int, float)) and
+           sample_set_dict['Limit'] > dicts['A-Result'] > 0):
+            less_APQL_pass_rinse_sample(sample_set_dict, dicts)
+# Permutation of passing rinse sample with A-result greather than or equal to APQL
+        elif (dicts['Sample Type'].lower().strip() == 'sample' and
+           dicts['Appearance'].lower().strip() == 'pass' and
+           isinstance(sample_set_dict['Limit'], (int, float)) and
+           dicts['A-Result'] >= sample_set_dict['Limit']):
+            greater_APQL_pass_rinse_sample(sample_set_dict, dicts)
+# Permutation of failng Appearance and AR not detected rinse sample
+        elif (dicts['Sample Type'].lower().strip() == 'sample' and
+           dicts['Appearance'].lower().strip() == 'fail' and
+           isinstance(sample_set_dict['Limit'], (int, float)) and
+           dicts['A-Result'] == 0):
+            zero_fail_rinse_sample(sample_set_dict, dicts)
+# Permuatatuon of failong Appearance and AP < APQL rinse sample
+        elif (dicts['Sample Type'].lower().strip() == 'sample' and
+           dicts['Appearance'].lower().strip() == 'fail' and
+           isinstance(sample_set_dict['Limit'], (int, float)) and
+           sample_set_dict['Limit'] > dicts['A-Result'] > 0):
+            less_APQL_fail_rinse_sample(sample_set_dict, dicts)
+# Permutation of failing Appearance and AR >= APQL rinse sample
+        elif (dicts['Sample Type'].lower().strip() == 'sample' and
+           dicts['Appearance'].lower().strip() == 'fail' and
+           isinstance(sample_set_dict['Limit'], (int, float)) and
+           dicts['A-Result'] >= sample_set_dict['Limit']):
+            greater_APQL_fail_rinse_sample(sample_set_dict, dicts)
+        else:
+            print(f'{dicts} did not qualify for any of the catagories please fix dev!')
 
 
 # Makes a dict out of relevant sample set info
