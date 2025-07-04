@@ -83,20 +83,51 @@ def swab_sample_gen(sample_list):
                     dicts['Appearance'].lower().strip() == 'pass' and
                         dicts['A-Result'] < 0.5*min_APQL):
                     passing_swab_blank(sample_list, dicts)
+                # Passing AR swab Failing appearance
+                elif (dicts['Sample Type'].lower().strip() == 'blank' and
+                      dicts['Appearance'].lower().strip() == 'fail' and
+                      dicts['A-Result'] < 0.5*min_APQL):
+                    less_fail_swab_blank(sample_list, dicts)
+                # Failing AR swab Passing appearance
                 elif (dicts['Sample Type'].lower().strip() == 'blank' and
                       dicts['Appearance'].lower().strip() == 'pass' and
-                      dicts['A-Result'] < 0.5*min_APQL):
-                    ...
-# Passing AR swab Failing appearance
-# Failing AR swab Passing appearance
-# Failing swab
-# Passing sample swab non-detected AR
-# Passing sample swab AR detected but < APQL for the material
-# Passing sample swab AR >= APQL for the given material
-# Passing swab AR failing appearance
-# Passing sample swab non-detected AR appearance fails
-# Passing sample swab AR detected but < APQL for the material appearance fails
-# Passing sample swab AR >= APQL for the given material appearance fails
+                      dicts['A-Result'] > 0.5*min_APQL):
+                    greater_pass_swab_blank(sample_list, dicts)
+                # Failing swab
+                elif (dicts['Sample Type'].lower().strip() == 'blank' and
+                      dicts['Appearance'].lower().strip() == 'fail' and
+                      dicts['A-Result'] > 0.5*min_APQL):
+                    fail_swab_blank(sample_list, dicts)
+                # Passing sample swab non-detected AR
+                elif (dicts['Sample Type'].lower().strip() == 'sample' and
+                      dicts['Appearance'].lower().strip() == 'pass' and
+                      dicts['A-Result'] == 0):
+                    pass_swab_sample(sample_list, dicts)
+                # Passing sample swab AR detected but < APQL for the material
+                elif (dicts['Sample Type'].lower().strip() == 'sample' and
+                      dicts['Appearance'].lower().strip() == 'pass' and
+                      dicts['A-Result'] < materials['APQL']):
+                    less_pass_swab_sample(sample_list, dicts)
+                # Passing sample swab AR >= APQL for the given material
+                elif (dicts['Sample Type'].lower().strip() == 'sample' and
+                      dicts['Appearance'].lower().strip() == 'pass' and
+                      dicts['A-Result'] >= materials['APQL']):
+                    greater_pass_swab_sample(sample_list, dicts)
+                # Passing swab AR (zero) failing appearance
+                elif (dicts['Sample Type'].lower().strip() == 'sample' and
+                      dicts['Appearance'].lower().strip() == 'fail' and
+                      dicts['A-Result'] == 0):
+                    non_fail_swab_sample(sample_list, dicts)
+                # Passing sample swab AR detected but < APQL for the material appearance fails
+                elif (dicts['Sample Type'].lower().strip() == 'sample' and
+                      dicts['Appearance'].lower().strip() == 'fail' and
+                      dicts['A-Result'] < materials['APQL']):
+                    less_fail_swab_sample(sample_list, dicts)
+                # Passing sample swab AR >= APQL for the given material appearance fails
+                elif (dicts['Sample Type'].lower().strip() == 'sample' and
+                      dicts['Appearance'].lower().strip() == 'fail' and
+                      dicts['A-Result'] >= materials['APQL']):
+                    greater_fail_swab_sample(sample_list, dicts)
             elif _ < len(list_of_material_APQLs):
                 _ = _ + 1
                 continue
@@ -398,13 +429,56 @@ Appearance and Color: Clear and Colorless. Reported as 'Pass'.
 {sample_list['Analyte']}: Peak not detected. Reported as 'Pass'.
 Other Peak(s): Not detected. Reported as 'Pass'.''')
 
+
 # Passing AR swab Failing appearance
+def less_fail_swab_blank(sample_list, dicts):
+    print('less_fail_swab_blank')
+    ...
+
+
 # Failing AR swab Passing appearance
-# Failing swab
+def greater_pass_swab_blank(sample_list, dicts):
+    print('greater_pass_swab_blank')
+    ...
+
+
+# Failing swab appearance and AR
+def fail_swab_blank(sample_list, dicts):
+    print('fail_swab_blank')
+    ...
+
+
 # Passing sample swab non-detected AR
+def pass_swab_sample(sample_list, dicts):
+    print('pass_swab_sample')
+    ...
+
+
 # Passing sample swab AR detected but < APQL for the material
+def less_pass_swab_sample(sample_list, dicts):
+    print('less_pass_swab_sample')
+    ...
+
+
 # Passing sample swab AR >= APQL for the given material
-# Passing swab AR failing appearance
-# Passing sample swab non-detected AR appearance fails
+def greater_pass_swab_sample(sample_list, dicts):
+    print('greater_pass_swab_sample')
+    ...
+
+
+# Non-detected AR failing appearance on swab sample
+def non_fail_swab_sample(sample_list, dicts):
+    print('non_fail_swab_sample')
+    ...
+
+
 # Passing sample swab AR detected but < APQL for the material appearance fails
+def less_fail_swab_sample(sample_list, dicts):
+    print('less_fail_swab_samples')
+    ...
+
+
 # Passing sample swab AR >= APQL for the given material appearance fails
+def greater_fail_swab_sample(sample_list, dicts):
+    print('greater_fail_swab_sample')
+    ...
