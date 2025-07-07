@@ -76,64 +76,66 @@ def swab_sample_gen(sample_list):
     min_APQL = min(list_of_APQL)
     for dicts in sample_list['Sample List']:
         _ = 1
-        for materials in list_of_material_APQLs:
-            if dicts['Material'].lower().strip() == materials['Material'].lower().strip():
-                # Passing Swab Blank
-                if (dicts['Sample Type'].lower().strip() == 'blank' and
-                    dicts['Appearance'].lower().strip() == 'pass' and
-                        dicts['A-Result'] < 0.5*min_APQL):
-                    passing_swab_blank(sample_list, dicts, list_of_APQL, materials)
+        if not dicts['Material']:
+            # Passing blank swab
+            if (dicts['Sample Type'].lower().strip() == 'blank' and
+                dicts['Appearance'].lower().strip() == 'pass' and
+                    dicts['A-Result'] < 0.5*min_APQL):
+                passing_swab_blank(sample_list, dicts, list_of_APQL, materials)
                 # Passing AR swab Failing appearance
-                elif (dicts['Sample Type'].lower().strip() == 'blank' and
-                      dicts['Appearance'].lower().strip() == 'fail' and
-                      dicts['A-Result'] < 0.5*min_APQL):
-                    less_fail_swab_blank(sample_list, dicts, list_of_APQL, materials)
+            elif (dicts['Sample Type'].lower().strip() == 'blank' and
+                  dicts['Appearance'].lower().strip() == 'fail' and
+                  dicts['A-Result'] < 0.5*min_APQL):
+                less_fail_swab_blank(sample_list, dicts, list_of_APQL, materials)
                 # Failing AR swab Passing appearance
-                elif (dicts['Sample Type'].lower().strip() == 'blank' and
-                      dicts['Appearance'].lower().strip() == 'pass' and
-                      dicts['A-Result'] > 0.5*min_APQL):
-                    greater_pass_swab_blank(sample_list, dicts, list_of_APQL, materials)
+            elif (dicts['Sample Type'].lower().strip() == 'blank' and
+                  dicts['Appearance'].lower().strip() == 'pass' and
+                  dicts['A-Result'] > 0.5*min_APQL):
+                greater_pass_swab_blank(sample_list, dicts, list_of_APQL, materials)
                 # Failing swab
-                elif (dicts['Sample Type'].lower().strip() == 'blank' and
-                      dicts['Appearance'].lower().strip() == 'fail' and
-                      dicts['A-Result'] > 0.5*min_APQL):
-                    fail_swab_blank(sample_list, dicts, list_of_APQL, materials)
-                # Passing sample swab non-detected AR
-                elif (dicts['Sample Type'].lower().strip() == 'sample' and
-                      dicts['Appearance'].lower().strip() == 'pass' and
-                      dicts['A-Result'] == 0):
-                    pass_swab_sample(sample_list, dicts, list_of_APQL, materials)
-                # Passing sample swab AR detected but < APQL for the material
-                elif (dicts['Sample Type'].lower().strip() == 'sample' and
-                      dicts['Appearance'].lower().strip() == 'pass' and
-                      dicts['A-Result'] < materials['APQL']):
-                    less_pass_swab_sample(sample_list, dicts, list_of_APQL, materials)
-                # Passing sample swab AR >= APQL for the given material
-                elif (dicts['Sample Type'].lower().strip() == 'sample' and
-                      dicts['Appearance'].lower().strip() == 'pass' and
-                      dicts['A-Result'] >= materials['APQL']):
-                    greater_pass_swab_sample(sample_list, dicts, list_of_APQL, materials)
-                # Passing swab AR (zero) failing appearance
-                elif (dicts['Sample Type'].lower().strip() == 'sample' and
-                      dicts['Appearance'].lower().strip() == 'fail' and
-                      dicts['A-Result'] == 0):
-                    non_fail_swab_sample(sample_list, dicts, list_of_APQL, materials)
-                # Passing sample swab AR detected but < APQL for the material appearance fails
-                elif (dicts['Sample Type'].lower().strip() == 'sample' and
-                      dicts['Appearance'].lower().strip() == 'fail' and
-                      dicts['A-Result'] < materials['APQL']):
-                    less_fail_swab_sample(sample_list, dicts, list_of_APQL, materials)
-                # Passing sample swab AR >= APQL for the given material appearance fails
-                elif (dicts['Sample Type'].lower().strip() == 'sample' and
-                      dicts['Appearance'].lower().strip() == 'fail' and
-                      dicts['A-Result'] >= materials['APQL']):
-                    greater_fail_swab_sample(sample_list, dicts, list_of_APQL, materials)
-            elif _ < len(list_of_material_APQLs):
-                _ = _ + 1
-                continue
-            else:
-                print(f'{dicts['Sample ID']} listed material does not match any of the ones listed as swab materials')
-                break
+            elif (dicts['Sample Type'].lower().strip() == 'blank' and
+                  dicts['Appearance'].lower().strip() == 'fail' and
+                  dicts['A-Result'] > 0.5*min_APQL):
+                fail_swab_blank(sample_list, dicts, list_of_APQL, materials)
+        elif dicts['Material']:
+            for materials in list_of_material_APQLs:
+                if dicts['Material'].lower().strip() == materials['Material'].lower().strip():
+                    # Passing sample swab non-detected AR
+                    if (dicts['Sample Type'].lower().strip() == 'sample' and
+                        dicts['Appearance'].lower().strip() == 'pass' and
+                            dicts['A-Result'] == 0):
+                        pass_swab_sample(sample_list, dicts, list_of_APQL, materials)
+                    # Passing sample swab AR detected but < APQL for the material
+                    elif (dicts['Sample Type'].lower().strip() == 'sample' and
+                          dicts['Appearance'].lower().strip() == 'pass' and
+                          dicts['A-Result'] < materials['APQL']):
+                        less_pass_swab_sample(sample_list, dicts, list_of_APQL, materials)
+                    # Passing sample swab AR >= APQL for the given material
+                    elif (dicts['Sample Type'].lower().strip() == 'sample' and
+                          dicts['Appearance'].lower().strip() == 'pass' and
+                          dicts['A-Result'] >= materials['APQL']):
+                        greater_pass_swab_sample(sample_list, dicts, list_of_APQL, materials)
+                    # Passing swab AR (zero) failing appearance
+                    elif (dicts['Sample Type'].lower().strip() == 'sample' and
+                          dicts['Appearance'].lower().strip() == 'fail' and
+                          dicts['A-Result'] == 0):
+                        non_fail_swab_sample(sample_list, dicts, list_of_APQL, materials)
+                    # Passing sample swab AR detected but < APQL for the material appearance fails
+                    elif (dicts['Sample Type'].lower().strip() == 'sample' and
+                          dicts['Appearance'].lower().strip() == 'fail' and
+                          dicts['A-Result'] < materials['APQL']):
+                        less_fail_swab_sample(sample_list, dicts, list_of_APQL, materials)
+                    # Passing sample swab AR >= APQL for the given material appearance fails
+                    elif (dicts['Sample Type'].lower().strip() == 'sample' and
+                          dicts['Appearance'].lower().strip() == 'fail' and
+                          dicts['A-Result'] >= materials['APQL']):
+                        greater_fail_swab_sample(sample_list, dicts, list_of_APQL, materials)
+                elif _ < len(list_of_material_APQLs):
+                    _ = _ + 1
+                    continue
+                else:
+                    print(f'{dicts['Sample ID']} listed material does not match any of the ones listed as swab materials')
+                    break
 
 
 # Passing rinse blank perm
@@ -561,7 +563,7 @@ def pass_swab_sample(sample_list, dicts, list_of_APQL, materials):
     if (isinstance(dicts['Other-Peak(s)'], (int, float)) and
             dicts['Other-Peak(s)'] < 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak not detected. Reported as 'Not detected'.
 Other Peak(s): Peak(s) detected at {dicts['Other-Peak(s)']} ug/100cm2.
@@ -569,7 +571,7 @@ Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is < 400 
     elif (isinstance(dicts['Other-Peak(s)'], (int, float)) and
             dicts['Other-Peak(s)'] >= 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak not detected. Reported as 'Not detected'.
 Other Peak(s): Peak(s) detected at {dicts['Other-Peak(s)']} ug/100cm2.
@@ -577,7 +579,7 @@ Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is >= 400
     elif (isinstance(dicts['Other-Peak(s)'], str) and
             dicts['Summed-Other-Peak(s)'] < 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak not detected. Reported as 'Not detected'.
 Other Peak(s): Peak(s) detected at {' ug/100cm2,'.join(dicts['Other-Peak(s)'].split(','))} ug/100cm2.
@@ -585,14 +587,14 @@ Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is < 400 
     elif (isinstance(dicts['Other-Peak(s)'], str) and
             dicts['Summed-Other-Peak(s)'] >= 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak not detected. Reported as 'Not detected'.
 Other Peak(s): Peak(s) detected at {' ug/100cm2,'.join(dicts['Other-Peak(s)'].split(','))} ug/100cm2.
 Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is >= 400 ug/100cm2. Reported as 'Fail\'.''')
     else:
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak not detected. Reported as 'Not detected'.
 Other Peak(s): Not detected. Reported as 'Pass'.''')
@@ -603,39 +605,39 @@ def less_pass_swab_sample(sample_list, dicts, list_of_APQL, materials):
     if (isinstance(dicts['Other-Peak(s)'], (int, float)) and
             dicts['Other-Peak(s)'] < 400):
         print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as 'Pass'.
+{dicts['Sample ID']}
+Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '< {materials['APQL']} ug/100cm2 (APQL)'.
 Other Peak(s): Peak(s) detected at {dicts['Other-Peak(s)']} ug/100cm2.
 Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is < 400 ug/100cm2. Reported as 'Pass\'.''')
     elif (isinstance(dicts['Other-Peak(s)'], (int, float)) and
             dicts['Other-Peak(s)'] >= 400):
         print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as 'Pass'.
+{dicts['Sample ID']}
+Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '< {materials['APQL']} ug/100cm2 (APQL)'.
 Other Peak(s): Peak(s) detected at {dicts['Other-Peak(s)']} ug/100cm2.
 Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is >= 400 ug/100cm2. Reported as 'Fail\'.''')
     elif (isinstance(dicts['Other-Peak(s)'], str) and
             dicts['Summed-Other-Peak(s)'] < 400):
         print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as 'Pass'.
+{dicts['Sample ID']}
+Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '< {materials['APQL']} ug/100cm2 (APQL)'.
 Other Peak(s): Peak(s) detected at {' ug/100cm2,'.join(dicts['Other-Peak(s)'].split(','))} ug/100cm2.
 Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is < 400 ug/100cm2. Reported as 'Pass\'.''')
     elif (isinstance(dicts['Other-Peak(s)'], str) and
             dicts['Summed-Other-Peak(s)'] >= 400):
         print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as 'Pass'.
+{dicts['Sample ID']}
+Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '< {materials['APQL']} ug/100cm2 (APQL)'.
 Other Peak(s): Peak(s) detected at {' ug/100cm2,'.join(dicts['Other-Peak(s)'].split(','))} ug/100cm2.
 Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is >= 400 ug/100cm2. Reported as 'Fail\'.''')
     else:
         print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as 'Pass'.
+{dicts['Sample ID']}
+Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '< {materials['APQL']} ug/100cm2 (APQL)'.
 Other Peak(s): Not detected. Reported as 'Pass'.''')
 
@@ -645,39 +647,39 @@ def greater_pass_swab_sample(sample_list, dicts, list_of_APQL, materials):
     if (isinstance(dicts['Other-Peak(s)'], (int, float)) and
             dicts['Other-Peak(s)'] < 400):
         print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as 'Pass'.
+{dicts['Sample ID']}
+Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '{dicts['A-Result']} ug/100cm2'
 Other Peak(s): Peak(s) detected at {dicts['Other-Peak(s)']} ug/100cm2.
 Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is < 400 ug/100cm2. Reported as 'Pass\'.''')
     elif (isinstance(dicts['Other-Peak(s)'], (int, float)) and
             dicts['Other-Peak(s)'] >= 400):
         print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as 'Pass'.
+{dicts['Sample ID']}
+Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '{dicts['A-Result']} ug/100cm2'
 Other Peak(s): Peak(s) detected at {dicts['Other-Peak(s)']} ug/100cm2.
 Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is >= 400 ug/100cm2. Reported as 'Fail\'.''')
     elif (isinstance(dicts['Other-Peak(s)'], str) and
             dicts['Summed-Other-Peak(s)'] < 400):
         print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as 'Pass'.
+{dicts['Sample ID']}
+Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '{dicts['A-Result']} ug/100cm2'
 Other Peak(s): Peak(s) detected at {' ug/100cm2,'.join(dicts['Other-Peak(s)'].split(','))} ug/100cm2.
 Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is < 400 ug/100cm2. Reported as 'Pass\'.''')
     elif (isinstance(dicts['Other-Peak(s)'], str) and
             dicts['Summed-Other-Peak(s)'] >= 400):
         print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as 'Pass'.
+{dicts['Sample ID']}
+Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '{dicts['A-Result']} ug/100cm2'
 Other Peak(s): Peak(s) detected at {' ug/100cm2,'.join(dicts['Other-Peak(s)'].split(','))} ug/100cm2.
 Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is >= 400 ug/100cm2. Reported as 'Fail\'.''')
     else:
         print(f'''
-{dicts['Sample ID']} Blank
-Appearance and Color: Clear and Colorless. Reported as 'Pass'.
+{dicts['Sample ID']}
+Appearance and Color: Clear and not more intensely colored than the blank sample(s). Reported as 'Pass'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '{dicts['A-Result']} ug/100cm2'
 Other Peak(s): Not detected. Reported as 'Pass'.''')
 
@@ -687,7 +689,7 @@ def non_fail_swab_sample(sample_list, dicts, list_of_APQL, materials):
     if (isinstance(dicts['Other-Peak(s)'], (int, float)) and
             dicts['Other-Peak(s)'] < 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak not detected. Reported as 'Not detected'.
 Other Peak(s): Peak(s) detected at {dicts['Other-Peak(s)']} ug/100cm2.
@@ -695,7 +697,7 @@ Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is < 400 
     elif (isinstance(dicts['Other-Peak(s)'], (int, float)) and
             dicts['Other-Peak(s)'] >= 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak not detected. Reported as 'Not detected'.
 Other Peak(s): Peak(s) detected at {dicts['Other-Peak(s)']} ug/100cm2.
@@ -703,7 +705,7 @@ Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is >= 400
     elif (isinstance(dicts['Other-Peak(s)'], str) and
             dicts['Summed-Other-Peak(s)'] < 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak not detected. Reported as 'Not detected'.
 Other Peak(s): Peak(s) detected at {' ug/100cm2,'.join(dicts['Other-Peak(s)'].split(','))} ug/100cm2.
@@ -711,14 +713,14 @@ Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is < 400 
     elif (isinstance(dicts['Other-Peak(s)'], str) and
             dicts['Summed-Other-Peak(s)'] >= 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak not detected. Reported as 'Not detected'.
 Other Peak(s): Peak(s) detected at {' ug/100cm2,'.join(dicts['Other-Peak(s)'].split(','))} ug/100cm2.
 Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is >= 400 ug/100cm2. Reported as 'Fail\'.''')
     else:
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak not detected. Reported as 'Not detected'.
 Other Peak(s): Not detected. Reported as 'Pass'.''')
@@ -729,7 +731,7 @@ def less_fail_swab_sample(sample_list, dicts, list_of_APQL, materials):
     if (isinstance(dicts['Other-Peak(s)'], (int, float)) and
             dicts['Other-Peak(s)'] < 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '< {materials['APQL']} ug/100cm2 (APQL)'.
 Other Peak(s): Peak(s) detected at {dicts['Other-Peak(s)']} ug/100cm2.
@@ -737,7 +739,7 @@ Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is < 400 
     elif (isinstance(dicts['Other-Peak(s)'], (int, float)) and
             dicts['Other-Peak(s)'] >= 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '< {materials['APQL']} ug/100cm2 (APQL)'.
 Other Peak(s): Peak(s) detected at {dicts['Other-Peak(s)']} ug/100cm2.
@@ -745,7 +747,7 @@ Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is >= 400
     elif (isinstance(dicts['Other-Peak(s)'], str) and
             dicts['Summed-Other-Peak(s)'] < 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '< {materials['APQL']} ug/100cm2 (APQL)'.
 Other Peak(s): Peak(s) detected at {' ug/100cm2,'.join(dicts['Other-Peak(s)'].split(','))} ug/100cm2.
@@ -753,14 +755,14 @@ Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is < 400 
     elif (isinstance(dicts['Other-Peak(s)'], str) and
             dicts['Summed-Other-Peak(s)'] >= 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '< {materials['APQL']} ug/100cm2 (APQL)'.
 Other Peak(s): Peak(s) detected at {' ug/100cm2,'.join(dicts['Other-Peak(s)'].split(','))} ug/100cm2.
 Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is >= 400 ug/100cm2. Reported as 'Fail\'.''')
     else:
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '< {materials['APQL']} ug/100cm2 (APQL)'.
 Other Peak(s): Not detected. Reported as 'Pass'.''')
@@ -771,7 +773,7 @@ def greater_fail_swab_sample(sample_list, dicts, list_of_APQL, materials):
     if (isinstance(dicts['Other-Peak(s)'], (int, float)) and
             dicts['Other-Peak(s)'] < 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '{dicts['A-Result']} ug/100cm2'
 Other Peak(s): Peak(s) detected at {dicts['Other-Peak(s)']} ug/100cm2.
@@ -779,7 +781,7 @@ Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is < 400 
     elif (isinstance(dicts['Other-Peak(s)'], (int, float)) and
             dicts['Other-Peak(s)'] >= 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '{dicts['A-Result']} ug/100cm2'
 Other Peak(s): Peak(s) detected at {dicts['Other-Peak(s)']} ug/100cm2.
@@ -787,7 +789,7 @@ Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is >= 400
     elif (isinstance(dicts['Other-Peak(s)'], str) and
             dicts['Summed-Other-Peak(s)'] < 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '{dicts['A-Result']} ug/100cm2'
 Other Peak(s): Peak(s) detected at {' ug/100cm2,'.join(dicts['Other-Peak(s)'].split(','))} ug/100cm2.
@@ -795,14 +797,14 @@ Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is < 400 
     elif (isinstance(dicts['Other-Peak(s)'], str) and
             dicts['Summed-Other-Peak(s)'] >= 400):
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '{dicts['A-Result']} ug/100cm2'
 Other Peak(s): Peak(s) detected at {' ug/100cm2,'.join(dicts['Other-Peak(s)'].split(','))} ug/100cm2.
 Total(Other Peak(s)): {dicts['Summed-Other-Peak(s)']} ug/100cm2. Which is >= 400 ug/100cm2. Reported as 'Fail\'.''')
     else:
         print(f'''
-{dicts['Sample ID']} Blank
+{dicts['Sample ID']}
 Appearance and Color: Not clear and more intensely colored than blank sample(s). Reported as 'Fail'.
 {sample_list['Analyte']}: Peak detected at {dicts['A-Result']} ug/100cm2. Reported as '{dicts['A-Result']} ug/100cm2'
-        Other Peak(s): Not detected. Reported as 'Pass'.''')
+Other Peak(s): Not detected. Reported as 'Pass'.''')
