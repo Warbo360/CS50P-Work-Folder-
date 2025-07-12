@@ -1,11 +1,10 @@
-from project import get_swab_APQL, get_sample_data, get_APQL
+from project import get_swab_APQL, get_sample_data, get_APQL, get_ws
 
 
 def main():
-    ws = get_ws(sys.argv[2])
-    test_get_swab_APQL()
-    test_get_sample_data()
-    test_get_APQL()
+    test_get_swab_APQL(open('./test_spreadsheets/1-Cleaning Samples Template.xlsx'))
+    test_get_sample_data('./test_spreadsheets/1-Cleaning Samples Template.xlsx')
+    test_get_APQL('./test_spreadsheets/1-Cleaning Samples Template.xlsx')
 
 
 def test_get_swab_APQL(worksheet):
