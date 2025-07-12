@@ -147,4 +147,5 @@ def determine_swabs(worksheet):
         sys.exit('Swabs in Cell "B8" not set to yes or no. Please fix and try again')
 
 
-main()
+if __name__ == "__main__":
+    main()
