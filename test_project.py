@@ -2,6 +2,7 @@ from project import get_swab_APQL, get_sample_data, get_APQL
 
 
 def main():
+    ws = get_ws(sys.argv[2])
     test_get_swab_APQL()
     test_get_sample_data()
     test_get_APQL()
