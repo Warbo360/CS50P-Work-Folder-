@@ -13,12 +13,10 @@ def main():
                                        get_sample_data(ws)))
 
 
-# TODO: Finish writing statment generator function
 def statement_gen_rinse(sample_set_dict):
     if isinstance(sample_set_dict['Limit'], (int, float)):
         rinse_sample_gen(sample_set_dict)
     elif isinstance(sample_set_dict['Limit'], (list)):
-        # TODO: Make a swab sample statement generator!
         swab_sample_gen(sample_set_dict)
 
 
