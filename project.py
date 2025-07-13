@@ -84,7 +84,10 @@ def get_sample_data(worksheet):
                 sys.exit('One of more "Other-Peak(s)" entries are non-numerical values, please fix and try again')
             sum_of_peaks = 0
             for peaks in other_peaks:
-                peaks = float(peaks)
+                try:
+                    peaks = float(peaks)
+                except ValueError:
+                    sys.exit('Either values in rows[0] are not comma seperated or a value is non-numerical')
                 sum_of_peaks = sum_of_peaks + peaks
             sum_of_total_peaks = sum_of_peaks + float(dicts['A-Result'])
             dicts['Summed-Other-Peak(s)'] = sum_of_peaks

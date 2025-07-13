@@ -34,25 +34,25 @@ def test_get_swab_APQL_returns_sys_exit_on_string_in_numerical_column():
 
 # Tests if programs exits on A_result for a sample is not a numerical value
 def test_get_sample_data_AR_is_string():
-    with pytest.raises(TypeError):
+    with pytest.raises(SystemExit):
         get_sample_data(get_ws_for_test("./test_spreadsheets/3-Cleaning Samples Template.xlsx"))
 
 
-# Tests on if TypeError is raised if a list entry cannot separate on commas
+# Tests on if SystemExit is raised if a list entry cannot separate on commas
 def test_get_sample_data_Other_Peaks_is_not_comma_sep():
-    with pytest.raises(TypeError):
+    with pytest.raises(SystemExit):
         get_sample_data(get_ws_for_test("./test_spreadsheets/4-Cleaning Samples Template.xlsx"))
 
 
-# Tests if a TypeError is raised on if one of the seperated values for a string insert for other peaks is non-numerical
+# Tests if a SystemExit is raised on if one of the seperated values for a string insert for other peaks is non-numerical
 def test_get_sample_data_Other_Peaks_is_string():
-    with pytest.raises(TypeError):
+    with pytest.raises(SystemExit):
         get_sample_data(get_ws_for_test("./test_spreadsheets/5-Cleaning Samples Template.xlsx"))
 
 
-# Tests if program gives TypeError on if a non-numerical value is given for APQL
+# Tests if program gives SystemExit on if a non-numerical value is given for APQL
 def test_get_APQL_string():
-    with pytest.raises(TypeError):
+    with pytest.raises(SystemExit):
         get_APQL(get_ws_for_test("./test_spreadsheets/6-Cleaning Samples Template.xlsx"))
 
 
