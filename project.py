@@ -1,7 +1,7 @@
 from openpyxl import load_workbook  # Allows reading and writing speadsheet files
 import sys
 import re
-from statement_gen_lib import *
+from statement_gen_lib import swab_sample_gen, rinse_sample_gen
 
 
 def main():
@@ -46,7 +46,7 @@ def get_swab_APQL(worksheet):
         elif not rows[0] and not rows[1]:
             continue
         else:
-            print(f'Please check the row of the {rows[0]} entry and that its inforamation is correct')
+            sys.exit(print(f'Please check the row of the {rows[0]} entry and that its inforamation is correct'))
     return material_APQLs
 
 
