@@ -38,7 +38,7 @@ def test_get_sample_data_AR_is_string():
         get_sample_data(get_ws_for_test("./test_spreadsheets/3-Cleaning Samples Template.xlsx"))
 
 
-# Tests on if SystemExit is raised if a list entry cannot separate on commas
+# Tests on if SystemExit is raised if a list entry for other peaks is not comma seperated and thus is a long string
 def test_get_sample_data_Other_Peaks_is_not_comma_sep():
     with pytest.raises(SystemExit):
         get_sample_data(get_ws_for_test("./test_spreadsheets/4-Cleaning Samples Template.xlsx"))

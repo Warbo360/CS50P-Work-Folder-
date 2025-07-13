@@ -17,7 +17,7 @@ def main():
 def convert(csv_in, csv_out):
     list_of_students = []
     try:
-        with open(csv_in, 'r') as input_file:
+        with get_ws(csv_in, 'r') as input_file:
             reader = csv.DictReader(input_file)
             for row in reader:
                 last, first = row['name'].split(',')
@@ -27,7 +27,7 @@ def convert(csv_in, csv_out):
     except FileNotFoundError:
         sys.exit('File does not exist')
     else:
-        with open(csv_out, 'w') as output_file:
+        with get_ws(csv_out, 'w') as output_file:
             writer = csv.DictWriter(output_file, fieldnames=['first', 'last', 'house'])
             writer.writeheader()
             i = 0
