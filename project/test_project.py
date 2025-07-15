@@ -1,6 +1,6 @@
-from project import get_swab_APQL, get_sample_data, get_APQL, get_ws
+from project import get_swab_APQL, get_sample_data, get_APQL
 import pytest
-from openpyxl import load_workbook  # Allows reading and writing speadsheet files
+from openpyxl import load_workbook  # Allows reading and writing spreadsheet files
 import sys
 
 
