@@ -6,7 +6,7 @@ from statement_gen_lib import swab_sample_gen, rinse_sample_gen
 
 def main():
     ws = get_ws(sys.argv[1])
-    print(get_sample_data(ws))
+    print(sample_list_checker(get_sample_data(ws)))
     # statement_gen_rinse(get_sample_data(ws))
 
 
@@ -24,7 +24,7 @@ def get_sample_data(worksheet):
         if (rows[0] and
                 rows[1]):
             sample_list.append({
-                'Sample ID': rows[0].lower().strip(),
+                'Sample ID': str(rows[0]).lower().strip(),
                 'Sample Type': rows[1].lower().strip(),
                 'Units': rows[2].lower().strip(),
                 'Limit': rows[3],
@@ -40,7 +40,7 @@ def sample_list_checker(sample_list):
         if (dicts['Sample Type'] != 'blank' and
                 dicts['Sample Type'] != 'sample'):
             sys.exit(f'Sample Type for {dicts['Sample ID']} is not of type "Blank" or "Sample"')
-        elif (dicts['Units'] != 'ug/mL' and
+        elif (dicts['Units'] != 'ug/ml' and
                 dicts['Units'] != 'ug/100cm2'):
             sys.exit(f'Units for {dicts['Sample ID']} is not either "ug/mL" or "ug/100cm2"')
         elif not isinstance(dicts['Limit'], (int, float)):
@@ -50,26 +50,28 @@ def sample_list_checker(sample_list):
             sys.exit(f'Appearance for {dicts['Sample ID']} is not either "Pass" or "Fail"')
         elif not isinstance(dicts['Analyte Result'], (int, float)):
             sys.exit(f'Analyte Result for {dicts['Sample ID']} is non-numerical')
+        elif not dicts['Other-Peaks']:
+            continue
         elif not isinstance(dicts['Other-Peaks'], (str)):
             sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
         else:
             try:
-                list_of_other_peaks = dicts['Other-Peaks'].split(',')
+                list_of_other_peaks = dicts['Other-Peaks'].split('), (')
             except ValueError:
                 sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
             else:
+                list_of_other_peaks_dicts = []
                 for pairs in list_of_other_peaks:
-                    list_of_other_peaks_dicts = []
                     try:
                         _ = pairs.strip('()').split(',')
                         list_of_other_peaks_dicts.append({
-                            'Retention Time': float(_[0]),
-                            'Concentration': float(_[1])
+                            'Retention Time': float(_[0].strip('()')),
+                            'Concentration': float(_[1].strip('()'))
                             })
+                        dicts['Other-Peaks'] = list_of_other_peaks_dicts
                     except ValueError:
                         sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
-                    else:
-                        dicts['Other-Peaks'] = list_of_other_peaks_dicts
+            return sample_list
 
 
 # Gets the active Worksheet from input Workbook
