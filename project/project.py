@@ -32,40 +32,44 @@ def get_sample_data(worksheet):
                 'Analyte Result': rows[5],
                 'Other-Peaks': rows[6],
                 })
-        for dicts in sample_list:
-            if (dicts['Sample Type'] != 'blank' and
-                    dicts['Sample Type'] != 'sample'):
-                sys.exit(f'Sample Type for {dicts['Sample ID']} is not of type "Blank" or "Sample"')
-            elif (dicts['Units'] != 'ug/mL' and
-                    dicts['Units'] != 'ug/100cm2'):
-                sys.exit(f'Units for {dicts['Sample ID']} is not either "ug/mL" or "ug/100cm2"')
-            elif not isinstance(dicts['Limit'], (int, float)):
-                sys.exit(f'Limit for {dicts['Sample ID']} is non-numerical')
-            elif (dicts['Appearance'] != 'pass' and
-                    dicts['Appearance'] != 'fail'):
-                sys.exit(f'Appearance for {dicts['Sample ID']} is not either "Pass" or "Fail"')
-            elif not isinstance(dicts['Analyte Result'], (int, float)):
-                sys.exit(f'Analyte Result for {dicts['Sample ID']} is non-numerical')
-            elif not isinstance(dicts['Other-Peaks'], (str)):
+    return sample_list
+
+
+def sample_list_checker(sample_list):
+    for dicts in sample_list:
+        if (dicts['Sample Type'] != 'blank' and
+                dicts['Sample Type'] != 'sample'):
+            sys.exit(f'Sample Type for {dicts['Sample ID']} is not of type "Blank" or "Sample"')
+        elif (dicts['Units'] != 'ug/mL' and
+                dicts['Units'] != 'ug/100cm2'):
+            sys.exit(f'Units for {dicts['Sample ID']} is not either "ug/mL" or "ug/100cm2"')
+        elif not isinstance(dicts['Limit'], (int, float)):
+            sys.exit(f'Limit for {dicts['Sample ID']} is non-numerical')
+        elif (dicts['Appearance'] != 'pass' and
+                dicts['Appearance'] != 'fail'):
+            sys.exit(f'Appearance for {dicts['Sample ID']} is not either "Pass" or "Fail"')
+        elif not isinstance(dicts['Analyte Result'], (int, float)):
+            sys.exit(f'Analyte Result for {dicts['Sample ID']} is non-numerical')
+        elif not isinstance(dicts['Other-Peaks'], (str)):
+            sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
+        else:
+            try:
+                list_of_other_peaks = dicts['Other-Peaks'].split(',')
+            except ValueError:
                 sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
             else:
-                try:
-                    list_of_other_peaks = dicts['Other-Peaks'].split(',')
-                except ValueError:
-                    sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
-                else:
-                    for pairs in list_of_other_peaks:
-                        list_of_other_peaks_dicts = []
-                        try:
-                            _ = pairs.strip('()').split(',')
-                            list_of_other_peaks_dicts.append({
-                                'Retention Time': float(_[0]),
-                                'Concentration': float(_[1])
-                                })
-                        except ValueError:
-                            sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
-                        else:
-                            dicts['Other-Peaks'] = list_of_other_peaks_dicts
+                for pairs in list_of_other_peaks:
+                    list_of_other_peaks_dicts = []
+                    try:
+                        _ = pairs.strip('()').split(',')
+                        list_of_other_peaks_dicts.append({
+                            'Retention Time': float(_[0]),
+                            'Concentration': float(_[1])
+                            })
+                    except ValueError:
+                        sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
+                    else:
+                        dicts['Other-Peaks'] = list_of_other_peaks_dicts
 
 
 # Gets the active Worksheet from input Workbook
