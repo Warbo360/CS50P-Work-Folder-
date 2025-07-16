@@ -54,6 +54,7 @@ def sample_list_checker(sample_list):
             continue
         elif not isinstance(dicts['Other-Peaks'], (str)):
             sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
+        #  TODO: Fix so program filters out bad inputs for Other Peaks
         else:
             try:
                 list_of_other_peaks = dicts['Other-Peaks'].split('), (')
@@ -71,7 +72,8 @@ def sample_list_checker(sample_list):
                         dicts['Other-Peaks'] = list_of_other_peaks_dicts
                     except ValueError:
                         sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
-            return sample_list
+                print(dicts['Other-Peaks'])
+            # return sample_list
 
 
 # Gets the active Worksheet from input Workbook
