@@ -5,12 +5,16 @@ from statement_gen_lib import swab_sample_gen, rinse_sample_gen
 
 
 def main():
-    ws = get_ws(sys.argv[1])
-    print(sample_list_checker(get_sample_data(ws)), 'line 9')
-    # statement_gen_rinse(get_sample_data(ws))
+    if len(sys.argv) == 2:
+        print(sample_list_checker(get_sample_data(get_ws(sys.argv[1]))), 'line 9')
+    elif len(sys.argv) > 2:
+        sys.exit('Please only link one file path at a time.')
+    else:
+        sys.exit('No file path given.')
+    # statement_gen(get_sample_data(ws))
 
 
-# def statement_gen_rinse(sample_set_dict):
+# def statement_gen(sample_set_dict):
 #     if isinstance(sample_set_dict['Limit'], (int, float)):
 #         rinse_sample_gen(sample_set_dict)
 #     elif isinstance(sample_set_dict['Limit'], (list)):
