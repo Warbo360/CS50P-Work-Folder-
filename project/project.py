@@ -12,6 +12,7 @@ def main():
     else:
         sys.exit('No file path given.')
     # statement_gen(get_sample_data(ws))
+    # Testing git commit editor on work comp
 
 
 # def statement_gen(sample_set_dict):
