@@ -6,17 +6,12 @@ from statement_gen_lib import state_gen
 
 def main():
     if len(sys.argv) == 2:
-        print(sample_list_checker(get_sample_data(get_ws(sys.argv[1]))), 'line 9')
+        # print((sample_list_checker(get_sample_data(get_ws(sys.argv[1])))))
+        print(state_gen(sample_list_checker(get_sample_data(get_ws(sys.argv[1])))))
     elif len(sys.argv) > 2:
         sys.exit('Please only link one file path at a time.')
     else:
         sys.exit('No file path given.')
-
-
-# TODO Will need to rework to point for swab generator since rinse and swabs handle other peaks differently
-# Can do so by checking units since ug/mL is rinse and swab is ug/100cm2
-def state_gen(sample_set):
-    ...
 
 
 # Gathers sample data and arranges it into a list of dicts, also automatically converts 'Other-Peak(s)' into one float
@@ -26,7 +21,7 @@ def get_sample_data(worksheet):
         if (rows[0] and
                 rows[1]):
             sample_set_list.append({
-                'Sample ID': str(rows[0]).lower().strip(),
+                'Sample ID': str(rows[0]).strip(),
                 'Sample Type': rows[1].lower().strip(),
                 'Units': rows[2].lower().strip(),
                 'Limit': rows[3],
@@ -34,6 +29,8 @@ def get_sample_data(worksheet):
                 'Analyte Result': rows[5],
                 'Other-Peaks': rows[6],
                 })
+        else:
+            continue
     return sample_set_list
 
 

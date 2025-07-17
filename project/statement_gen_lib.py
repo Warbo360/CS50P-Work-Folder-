@@ -17,12 +17,18 @@
 def state_gen(sample_set_list):
     statement = ''
     for samples in sample_set_list:
-        statement.append(sample_info_state(sample_set_list))
-        statement.append(sample_AR_state(sample_set_list))
-        statement.append(sample_other_state(sample_set_list))
-        if sample['Units'] == 'ug/ml':
-            statement.append(other_rinse_state(sample_set_list))
-        else:
-            statement.append(other_swab_state(sample_set_list))
-    statement.append('\n')
+        statement.append(sample_info_state(samples))
+        # statement.append(sample_AR_state(sample_set_list))
+        # statement.append(sample_other_state(sample_set_list))
+        # if sample['Units'] == 'ug/ml':
+        #     statement.append(other_rinse_state(sample_set_list))
+        # else:
+        #     statement.append(other_swab_state(sample_set_list))
     return statement
+
+
+def sample_info_state(sample):
+    if sample['Sample Type'] == 'blank':
+        return f'{sample['Sample ID']} Blank'
+    else:
+        return f'{sample['Sample ID']}'
