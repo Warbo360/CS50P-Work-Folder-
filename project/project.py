@@ -6,7 +6,7 @@ from statement_gen_lib import swab_sample_gen, rinse_sample_gen
 
 def main():
     ws = get_ws(sys.argv[1])
-    print(sample_list_checker(get_sample_data(ws)))
+    print(sample_list_checker(get_sample_data(ws)), 'line 9')
     # statement_gen_rinse(get_sample_data(ws))
 
 
@@ -54,7 +54,6 @@ def sample_list_checker(sample_list):
             continue
         elif not isinstance(dicts['Other-Peaks'], (str)):
             sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
-        #  TODO: Fix so program filters out bad inputs for Other Peaks
         else:
             try:
                 list_of_other_peaks = dicts['Other-Peaks'].split('), (')
@@ -72,8 +71,7 @@ def sample_list_checker(sample_list):
                         dicts['Other-Peaks'] = list_of_other_peaks_dicts
                     except ValueError:
                         sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
-                print(dicts['Other-Peaks'])
-            # return sample_list
+    return sample_list
 
 
 # Gets the active Worksheet from input Workbook
