@@ -1,7 +1,7 @@
 from openpyxl import load_workbook  # Allows reading and writing speadsheet files
 import sys
 import re
-from statement_gen_lib import swab_sample_gen, rinse_sample_gen
+from statement_gen_lib import state_gen
 
 
 def main():
@@ -11,24 +11,21 @@ def main():
         sys.exit('Please only link one file path at a time.')
     else:
         sys.exit('No file path given.')
-    # statement_gen(get_sample_data(ws))
-    # Testing git commit editor on work comp
 
 
-# def statement_gen(sample_set_dict):
-#     if isinstance(sample_set_dict['Limit'], (int, float)):
-#         rinse_sample_gen(sample_set_dict)
-#     elif isinstance(sample_set_dict['Limit'], (list)):
-#         swab_sample_gen(sample_set_dict)
+# TODO Will need to rework to point for swab generator since rinse and swabs handle other peaks differently
+# Can do so by checking units since ug/mL is rinse and swab is ug/100cm2
+def state_gen(sample_set):
+    ...
 
 
 # Gathers sample data and arranges it into a list of dicts, also automatically converts 'Other-Peak(s)' into one float
 def get_sample_data(worksheet):
-    sample_list = []
+    sample_set_list = []
     for rows in worksheet.iter_rows(min_row=3, max_col=7, values_only=True):
         if (rows[0] and
                 rows[1]):
-            sample_list.append({
+            sample_set_list.append({
                 'Sample ID': str(rows[0]).lower().strip(),
                 'Sample Type': rows[1].lower().strip(),
                 'Units': rows[2].lower().strip(),
@@ -37,7 +34,7 @@ def get_sample_data(worksheet):
                 'Analyte Result': rows[5],
                 'Other-Peaks': rows[6],
                 })
-    return sample_list
+    return sample_set_list
 
 
 def sample_list_checker(sample_list):
