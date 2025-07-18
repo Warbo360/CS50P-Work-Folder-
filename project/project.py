@@ -17,7 +17,7 @@ def main():
 # Gathers sample data and arranges it into a list of dicts, also automatically converts 'Other-Peak(s)' into one float
 def get_sample_data(worksheet):
     sample_set_list = []
-    for rows in worksheet.iter_rows(min_row=3, max_col=7, values_only=True):
+    for rows in worksheet.iter_rows(min_row=3, max_col=9, values_only=True):
         if (rows[0] and
                 rows[1]):
             sample_set_list.append({
