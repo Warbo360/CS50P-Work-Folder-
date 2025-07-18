@@ -24,11 +24,11 @@ def sample_AR_state(sample):
         if sample['Analyte Result'] < sample['Limit'] * 0.5:
             return f'{sample['Analyte']}: Not detected. Reported as "Pass".\n'
         else:
-            return f'{sample['Analyte']}: Detected. RT {sample['Analyte RT']} = {sample['Analyte Result']} {sample['Units']}. Reported as "Fail".\n'
+            return f'{sample['Analyte']}: Detected. RT {sample['Analyte RT']} min = {sample['Analyte Result']:.2f} {sample['Units']}. Reported as "Fail".\n'
     else:
         if sample['Analyte Result'] < sample['Limit'] * 0.5:
             return f'{sample['Analyte']}: Not detected. Reported as "< {sample['Limit']} {sample['Units']} (APQL)".\n'
         elif sample['Limit'] > sample['Analyte Result'] >= sample['Limit'] * 0.5:
-            return f'{sample['Analyte']}: Detected. RT {sample['Analyte RT']} = {sample['Analyte Result']}. Reported as "< {sample['Limit']} {sample['Units']} (APQL)".\n'
+            return f'{sample['Analyte']}: Detected. RT {sample['Analyte RT']} min = {sample['Analyte Result']:.2f} {sample['Units']}. Reported as "< {sample['Limit']} {sample['Units']} (APQL)".\n'
         elif sample['Analyte Result'] >= sample['Limit']:
-            return f'{sample['Analyte']}: Detected. RT {sample['Analyte RT']} = {sample['Analyte Result']}. Reported as "{sample['Analyte Result']} {sample['Units']}".\n'
+            return f'{sample['Analyte']}: Detected. RT {sample['Analyte RT']} min = {sample['Analyte Result']:.2f} {sample['Units']}. Reported as "{sample['Analyte Result']} {sample['Units']}".\n'
