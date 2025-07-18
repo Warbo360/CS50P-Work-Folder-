@@ -27,7 +27,7 @@ correct though the functions will parse the active sheet and create a sample set
 into a list, this list is put into a greater dictionary of other sample set information like various analyte limit(s) and name of
 the analyte. There is a function that reads a cell for the number of samples, but it is unused as the function that gathers sample
 set data generates the needed number of dictionaries for the amount of samples that are filled in.
-Other features of the file is the importing of OpenPyXL, a pip-installable library that handles the reading and writing of speadsheet
+Other features of the file is the importing of OpenPyXL, a pip-installable library that handles the reading and writing of spreadsheet
 files. This program only makes use of reading spreadsheet files and does not manipulate the given file in anyway.
 Also imported are the included python libraries 'sys' and 're' for sys.exit() on error handling, and regex checking of '.xlsx' files.
 
@@ -52,5 +52,5 @@ or spreadsheets that test for a particular output or error to be handled. Also i
 
 
 #### Test_Spreadsheets/
-A bank of spreadsheets that are used in conjunction with test_project.py. These spreadsheets are hardcoded inputs of the test functions that use them to still
+A bank of spreadsheets that are used in conjunction with test_project.py. These spreadsheets are hard coded inputs of the test functions that use them to still
 allows for just the '$ pytest test_project.py' syntax in the CLI to still properly test the file without needed special handling of arguments to pytest.

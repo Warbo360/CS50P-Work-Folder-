@@ -17,7 +17,7 @@
 def state_gen(sample_set_list):
     statement = ''
     for samples in sample_set_list:
-        statement.append(sample_info_state(samples))
+        statement = statement + sample_info_state(samples)
         # statement.append(sample_AR_state(sample_set_list))
         # statement.append(sample_other_state(sample_set_list))
         # if sample['Units'] == 'ug/ml':
@@ -29,6 +29,14 @@ def state_gen(sample_set_list):
 
 def sample_info_state(sample):
     if sample['Sample Type'] == 'blank':
-        return f'{sample['Sample ID']} Blank'
+        return f'{sample['Sample ID']} Blank\n'
     else:
-        return f'{sample['Sample ID']}'
+        return f'{sample['Sample ID']}\n'
+
+
+def sample_AR_state(sample):
+    if sample['Sample Type'] == 'blank':
+        if sample['Analyte Result'] < sample['Limit'] * 0.5:
+            return f'{sample['Analyte']}: Not detected. Reported as "Pass".'
+        else:
+            return f'{sample['Analyte']}: Detected. RT {sample['Analyte RT']} = {sample['Analyte Result']}. Reported as "Fail".'

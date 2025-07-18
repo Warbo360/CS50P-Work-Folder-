@@ -26,8 +26,10 @@ def get_sample_data(worksheet):
                 'Units': rows[2].lower().strip(),
                 'Limit': rows[3],
                 'Appearance': rows[4].lower().strip(),
-                'Analyte Result': rows[5],
-                'Other-Peaks': rows[6],
+                'Analyte': rows[5].strip(),
+                'Analyte RT': rows[6],
+                'Analyte Result': rows[7],
+                'Other-Peaks': rows[8],
                 })
         else:
             continue
@@ -47,6 +49,10 @@ def sample_list_checker(sample_list):
         elif (dicts['Appearance'] != 'pass' and
                 dicts['Appearance'] != 'fail'):
             sys.exit(f'Appearance for {dicts['Sample ID']} is not either "Pass" or "Fail"')
+        elif not dicts['Analyte']:
+            sys.exit(f'Not Analyte entry for {dicts['Sample ID']}, please fix and try again')
+        elif not isinstance(dicts['Analyte RT'], (int, float)):
+            sys.exit(f'RT Entry for {dicts['Sample ID']} is non-numerical, please fix and try again')
         elif not isinstance(dicts['Analyte Result'], (int, float)):
             sys.exit(f'Analyte Result for {dicts['Sample ID']} is non-numerical')
         elif not dicts['Other-Peaks']:
