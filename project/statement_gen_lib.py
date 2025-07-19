@@ -1,4 +1,3 @@
-# Handler function that directs to other functions
 def state_gen(sample_set_list):
     statement = ''
     for samples in sample_set_list:
@@ -7,13 +6,8 @@ def state_gen(sample_set_list):
                 sample_info_state(samples) +
                 sample_AR_state(samples) +
                 sample_other_state(samples) +
+                sample_total_state(samples) +
                 '\n')
-        # statement.append(sample_AR_state(sample_set_list))
-        # statement.append(sample_other_state(sample_set_list))
-        # if sample['Units'] == 'ug/ml':
-        #     statement.append(other_rinse_state(sample_set_list))
-        # else:
-        #     statement.append(other_swab_state(sample_set_list))
     return statement
 
 
@@ -44,16 +38,20 @@ def sample_AR_state(sample):
 
 def sample_other_state(sample):
     other_str = 'Other Peaks: '
-    if not sample["Other-Peaks"]:
+    if not sample['Other-Peaks']:
         other_str = 'Other Peak(s): Not detected.'
         return f'{other_str}\n'
     else:
         other_str = other_str + 'Detected. '
         for others in sample['Other-Peaks']:
-            if others["Concentration"] > sample["Limit"]:
-                other_str = other_str + f'{others["Retention Time"]} min ='\
-                                        f'{others["Concentration"]} {sample["Units"]}. '
+            if others['Concentration'] > sample['Limit']:
+                other_str = other_str + f'{others['Retention Time']} min ='\
+                                        f'{others['Concentration']} {sample['Units']}. '
             else:
-                other_str = other_str + f'{others["Retention Time"]} min ='\
-                                        f'< {sample["Limit"]} {sample["Units"]} (APQL). '
+                other_str = other_str + f'{others['Retention Time']} min ='\
+                                        f'< {sample['Limit']} {sample['Units']} (APQL). '
         return f'{other_str}\n'
+
+
+def sample_total_state(sample):
+    ...
