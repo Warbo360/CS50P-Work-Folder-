@@ -44,7 +44,7 @@ def sample_other_state(sample):
     else:
         other_str = other_str + 'Detected. '
         for others in sample['Other-Peaks']:
-            if others['Concentration'] > sample['Limit']:
+            if others['Concentration'] >= sample['Limit']:
                 other_str = other_str + f'{others['Retention Time']} min ='\
                                         f'{others['Concentration']} {sample['Units']}. '
             else:
@@ -54,4 +54,80 @@ def sample_other_state(sample):
 
 
 def sample_total_state(sample):
-    ...
+    if sample['Units'] == 'ug/ml'\
+            and sample['Other-Peaks']:
+        if sample['Analyte Result'] >= sample['Limit']:
+            total_state = f'Total({sample['Analyte Result']} + Other Peak(s)):'\
+                          f'{sample['Analyte Result']} {sample['Units']} '
+            others_total = sample['Analyte Result']
+            for others in sample['Other-Peaks']:
+                if others['Concentration'] >= sample['Limit']:
+                    total_state = total_state + f'+ {others['Concentration']} {sample['Units']} '
+                    others_total = others_total + others['Concentration']
+                else:
+                    total_state = total_state + f'+ < {sample['Limit']} {sample['Units']} '
+                    others_total = others_total + sample['Limit']
+            if '<' in total_state:
+                return total_state + f'= < {others_total} {sample['Units']}. '
+            else:
+                return total_state + f'= {others_total} {sample['Units']}. '
+        else:
+            total_state = f'Total({sample['Analyte Result Result']} + Other Peak(s)):'\
+                          f'< {sample['Limit']} {sample['Units']} '
+            others_total = sample['Limit']
+            for others in sample['Other-Peaks']:
+                if others['Concentration'] >= sample['Limit']:
+                    total_state = total_state + f'+ {others['Concentration']} {sample['Units']} '
+                    others_total = others_total + others['Concentration']
+                else:
+                    total_state = total_state + f'+ < {sample['Limit']} {sample['Units']} '
+                    others_total = others_total + sample['Limit']
+            if '<' in total_state:
+                return total_state + f'= < {others_total} {sample['Units']}. '
+            else:
+                return total_state + f'= {others_total} {sample['Units']}. '
+    elif sample['Units'] == 'ug/ml'\
+            and not sample['Other-Peaks']:
+        if sample['Analyte Result'] >= sample['Limit']:
+            return f'Total({sample['Analyte']} and Other Peak(s)): {sample['Analyte Result']} {sample['Units']}.'
+        else:
+            return f'Total({sample['Analyte']} and Other Peak(s)): {sample['Limit']} {sample['Units']}.'
+    elif sample['Units'] == 'ug/100cm2'\
+            and not sample['Other-Peaks']:
+            return ''
+    else:
+        total_state = 'Total Other Peak(s): '
+        others_total = 0
+        for others in sample['Other-Peaks']:
+            _ = 0
+            if others['Concentration'] >= sample['Limit']\
+                    and _ < 1:
+                total_state = total_state + f'{others['Concentration']} {sample['Units']} '
+                others_total = others_total + others['Concentration']
+            elif others['Concentration'] >= sample['Limit']\
+                    and _ >= 1:
+                total_state = total_state + f'+ {others['Concentration']} {sample['Units']} '
+                others_total = others_total + others['Concentration']
+            elif others['Concentration'] < sample['Limit']\
+                    and _ < 1:
+                total_state = total_state + f'< {sample['Limit']} {sample['Units']} '
+                others_total = others_total + sample['Limit']
+            else:
+                total_state = total_state + f'+ < {sample['Limit']} {sample['Units']} '
+                others_total = others_total + sample['Limit']
+        if others_total >= 400\
+                and '<' in total_state:
+            return total_state + f'= < {others_total} {sample['Units']}. Which is NLT than 400ug/100cm2.'\
+                                 f'Reported as "Fail".'
+        elif others_total < 400\
+                and '<' in total_state:
+            return total_state + f'= < {others_total} {sample['Units']}. Which is NMT than 400ug/100cm2.'\
+                                 f'Reported as "Pass".'
+        elif others_total >= 400:
+            return total_state + f'= {others_total} {sample['Units']}. Which is NLT than 400ug/100cm2.'\
+                                 f'Reported as "Fail".'
+        else:
+            return total_state + f'= {others_total} {sample['Units']}. Which is NMT than 400ug/100cm2.'\
+                                 f'Reported as "Pass".'
+
+
