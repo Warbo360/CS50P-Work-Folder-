@@ -7,7 +7,7 @@ from statement_gen_lib import state_gen
 def main():
     if len(sys.argv) == 2:
         # print((sample_list_checker(get_sample_data(get_ws(sys.argv[1])))))
-        print(state_gen(sample_list_checker(get_sample_data(get_ws(sys.argv[1])))))
+        print(state_gen(sample_list_checker(get_sample_data(get_ws(sys.argv[1])))), end='')
     elif len(sys.argv) > 2:
         sys.exit('Please only link one file path at a time.')
     else:
@@ -37,33 +37,75 @@ def get_sample_data(worksheet):
 
 
 def sample_list_checker(sample_list):
+    sample_type_checker(sample_list)
+    sample_type_checker(sample_list)
+    sample_limit_checker(sample_list)
+    sample_appearance_checker(sample_list)
+    sample_analyte_checker(sample_list)
+    sample_ar_rt_checker(sample_list)
+    sample_ar_cc_checker(sample_list)
+    sample_other_checker(sample_list)
+    return sample_list
+
+
+def sample_type_checker(sample_list):
     for dicts in sample_list:
         if (dicts['Sample Type'] != 'blank' and
                 dicts['Sample Type'] != 'sample'):
             sys.exit(f'Sample Type for {dicts['Sample ID']} is not of type "Blank" or "Sample"')
-        elif (dicts['Units'] != 'ug/ml' and
+
+
+def sample_unit_checker(sample_list):
+    for dicts in sample_list:
+        if (dicts['Units'] != 'ug/ml' and
                 dicts['Units'] != 'ug/100cm2'):
             sys.exit(f'Units for {dicts['Sample ID']} is not either "ug/mL" or "ug/100cm2"')
-        elif not isinstance(dicts['Limit'], (int, float)):
+
+
+def sample_limit_checker(sample_list):
+    for dicts in sample_list:
+        if not isinstance(dicts['Limit'], (int, float)):
             sys.exit(f'Limit for {dicts['Sample ID']} is non-numerical')
-        elif (dicts['Appearance'] != 'pass' and
+
+
+def sample_appearance_checker(sample_list):
+    for dicts in sample_list:
+        if (dicts['Appearance'] != 'pass' and
                 dicts['Appearance'] != 'fail'):
             sys.exit(f'Appearance for {dicts['Sample ID']} is not either "Pass" or "Fail"')
-        elif not dicts['Analyte']:
+
+
+def sample_analyte_checker(sample_list):
+    for dicts in sample_list:
+        if not dicts['Analyte']:
             sys.exit(f'Not Analyte entry for {dicts['Sample ID']}, please fix and try again')
-        elif not isinstance(dicts['Analyte RT'], (int, float)):
+
+
+def sample_ar_rt_checker(sample_list):
+    for dicts in sample_list:
+        if not isinstance(dicts['Analyte RT'], (int, float)):
             sys.exit(f'RT Entry for {dicts['Sample ID']} is non-numerical, please fix and try again')
-        elif not isinstance(dicts['Analyte Result'], (int, float)):
+
+
+def sample_ar_cc_checker(sample_list):
+    for dicts in sample_list:
+        if not isinstance(dicts['Analyte Result'], (int, float)):
             sys.exit(f'Analyte Result for {dicts['Sample ID']} is non-numerical')
-        elif not dicts['Other-Peaks']:
+
+
+def sample_other_checker(sample_list):
+    for dicts in sample_list:
+        if not dicts['Other-Peaks']:
             continue
         elif not isinstance(dicts['Other-Peaks'], (str)):
-            sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
+            sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format.'
+                     f'Please fix and try again.')
         else:
             try:
                 list_of_other_peaks = dicts['Other-Peaks'].split('), (')
             except ValueError:
-                sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
+                sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format.'
+                         f'Please fix and try again.')
             else:
                 list_of_other_peaks_dicts = []
                 for pairs in list_of_other_peaks:
@@ -75,8 +117,8 @@ def sample_list_checker(sample_list):
                             })
                         dicts['Other-Peaks'] = list_of_other_peaks_dicts
                     except ValueError:
-                        sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format. Please fix and try again.')
-    return sample_list
+                        sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format.'
+                                 f'Please fix and try again.')
 
 
 # Gets the active Worksheet from input Workbook
