@@ -7,7 +7,7 @@ from statement_gen_lib import state_gen
 def main():
     if len(sys.argv) == 2:
         # print((sample_list_checker(get_sample_data(get_ws(sys.argv[1])))))
-        print(state_gen(sample_list_checker(get_sample_data(get_ws(sys.argv[1])))), end='')
+        print('\n', state_gen(sample_list_checker(get_sample_data(get_ws(sys.argv[1])))), end='')
     elif len(sys.argv) > 2:
         sys.exit('Please only link one file path at a time.')
     else:
@@ -128,7 +128,7 @@ def get_ws(filename):
             wb = load_workbook(filename=sys.argv[1])  # Spreadsheet should only have one sheet
             return wb.active
         except FileNotFoundError:
-            sys.exit('File not Found!')
+            sys.exit('File not found!')
     else:
         sys.exit('File is not an ".xlsx" file')
 
