@@ -39,7 +39,7 @@ def get_sample_data(worksheet):
 
 def sample_list_checker(sample_list):
     sample_type_checker(sample_list)
-    sample_type_checker(sample_list)
+    sample_unit_checker(sample_list)
     sample_limit_checker(sample_list)
     sample_appearance_checker(sample_list)
     sample_analyte_checker(sample_list)
@@ -53,45 +53,45 @@ def sample_type_checker(sample_list):
     for dicts in sample_list:
         if (dicts['Sample Type'] != 'blank' and
                 dicts['Sample Type'] != 'sample'):
-            sys.exit(f'Sample Type for {dicts['Sample ID']} is not of type "Blank" or "Sample"')
+            raise SystemExit(sys.exit(f'Sample Type for {dicts['Sample ID']} is not of type "Blank" or "Sample"'))
 
 
 def sample_unit_checker(sample_list):
     for dicts in sample_list:
         if (dicts['Units'] != 'ug/ml' and
                 dicts['Units'] != 'ug/100cm2'):
-            sys.exit(f'Units for {dicts['Sample ID']} is not either "ug/mL" or "ug/100cm2"')
+            raise SystemExit(sys.exit(f'Units for {dicts['Sample ID']} is not either "ug/mL" or "ug/100cm2"'))
 
 
 def sample_limit_checker(sample_list):
     for dicts in sample_list:
         if not isinstance(dicts['Limit'], (int, float)):
-            sys.exit(f'Limit for {dicts['Sample ID']} is non-numerical')
+            raise SystemExit(sys.exit(f'Limit for {dicts['Sample ID']} is non-numerical'))
 
 
 def sample_appearance_checker(sample_list):
     for dicts in sample_list:
         if (dicts['Appearance'] != 'pass' and
                 dicts['Appearance'] != 'fail'):
-            sys.exit(f'Appearance for {dicts['Sample ID']} is not either "Pass" or "Fail"')
+            raise SystemExit(sys.exit(f'Appearance for {dicts['Sample ID']} is not either "Pass" or "Fail"'))
 
 
 def sample_analyte_checker(sample_list):
     for dicts in sample_list:
         if not dicts['Analyte']:
-            sys.exit(f'Not Analyte entry for {dicts['Sample ID']}, please fix and try again')
+            raise SystemExit(sys.exit(f'Not Analyte entry for {dicts['Sample ID']}, please fix and try again'))
 
 
 def sample_ar_rt_checker(sample_list):
     for dicts in sample_list:
         if not isinstance(dicts['Analyte RT'], (int, float)):
-            sys.exit(f'RT Entry for {dicts['Sample ID']} is non-numerical, please fix and try again')
+            raise SystemExit(sys.exit(f'RT Entry for {dicts['Sample ID']} is non-numerical, please fix and try again'))
 
 
 def sample_ar_cc_checker(sample_list):
     for dicts in sample_list:
         if not isinstance(dicts['Analyte Result'], (int, float)):
-            sys.exit(f'Analyte Result for {dicts['Sample ID']} is non-numerical')
+            raise SystemExit(sys.exit(f'Analyte Result for {dicts['Sample ID']} is non-numerical'))
 
 
 def sample_other_checker(sample_list):
@@ -99,8 +99,8 @@ def sample_other_checker(sample_list):
         if not dicts['Other-Peaks']:
             continue
         elif not isinstance(dicts['Other-Peaks'], (str)):
-            sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format.'
-                     f'Please fix and try again.')
+            raise SystemExit(sys.exit(f'Other-Peak(s) entrie(s) for {dicts['Sample ID']} not in proper format.'
+                                      f'Please fix and try again.'))
         else:
             try:
                 list_of_other_peaks = dicts['Other-Peaks'].split('), (')
