@@ -1,60 +1,185 @@
-from project import get_swab_APQL, get_sample_data, get_APQL
+from project import (
+        sample_list_checker,
+        get_ws,
+        get_sample_data,
+        state_gen,
+        sample_type_checker,
+        sample_limit_checker,
+        sample_appearance_checker,
+        sample_analyte_checker,
+        sample_ar_rt_checker,
+        sample_ar_cc_checker,
+        sample_other_checker,
+)
 import pytest
 from openpyxl import load_workbook  # Allows reading and writing spreadsheet files
 import sys
 
 
 def main():
-    test_get_swab_APQL_returns_list_type()
-    test_get_swab_APQL_returns_sys_exit_on_string_in_numerical_column()
-    test_get_sample_data_AR_is_string()
-    test_get_sample_data_Other_Peaks_is_not_comma_sep()
-    test_get_sample_data_Other_Peaks_is_string()
-    test_get_APQL_string()
+    test_sample_type_checker()
+    test_sample_limit_checker()
+    test_sample_appearance_checker_string()
+    test_sample_appearance_checker_int()
+    test_sample_analyte_checker()
+    test_sample_ar_rt_checker()
+    test_sample_ar_cc_checker()
+    test_sample_other_checker()
+    ...
 
 
-def get_ws_for_test(filename):
-    try:
-        wb = load_workbook(filename)
-        return wb.active
-    except FileNotFoundError:
-        sys.exit('File not Found!')
+def test_sample_type_checker():
+    with pytest.raises(TypeError):
+        sample_type_checker({
+                'Sample ID': 'Test String Here',
+                'Sample Type': 'THIS SHOULD CAUSE TEST TO EXIT',
+                'Units': 'ug/ml',
+                'Limit': 23,
+                'Appearance': 'pass',
+                'Analyte': 'Test String Here',
+                'Analyte RT': 2.10,
+                'Analyte Result': 0.12,
+                'Other-Peaks': None,
+            })
 
 
-# Tests if the output of the function is a list
-def test_get_swab_APQL_returns_list_type():
-    assert isinstance(get_swab_APQL(get_ws_for_test("./test_spreadsheets/1-Cleaning Samples Template.xlsx")), list)
+def test_sample_limit_checker():
+    with pytest.raises(TypeError):
+        sample_type_checker({
+                'Sample ID': 'Test String Here',
+                'Sample Type': 'blank',
+                'Units': 'ug/ml',
+                'Limit': 'THIS SHOULD RAISE AN ERROR',
+                'Appearance': 'pass',
+                'Analyte': 'Test String Here',
+                'Analyte RT': 2.10,
+                'Analyte Result': 0.12,
+                'Other-Peaks': None,
+            })
 
 
-# Tests if programs exits on seeing that there is a sting in the numerical entry for swab APQLs
-def test_get_swab_APQL_returns_sys_exit_on_string_in_numerical_column():
-    with pytest.raises(SystemExit):
-        get_swab_APQL(get_ws_for_test("./test_spreadsheets/2-Cleaning Samples Template.xlsx"))
+def test_sample_appearance_checker_string():
+    with pytest.raises(TypeError):
+        sample_type_checker({
+                'Sample ID': 'Test String Here',
+                'Sample Type': 'blank',
+                'Units': 'ug/ml',
+                'Limit': 23,
+                'Appearance': 'THIS SHOULD RAISE AN ERROR',
+                'Analyte': 'Test String Here',
+                'Analyte RT': 2.10,
+                'Analyte Result': 0.12,
+                'Other-Peaks': None,
+            })
 
 
-# Tests if programs exits on A_result for a sample is not a numerical value
-def test_get_sample_data_AR_is_string():
-    with pytest.raises(SystemExit):
-        get_sample_data(get_ws_for_test("./test_spreadsheets/3-Cleaning Samples Template.xlsx"))
+def test_sample_appearance_checker_int():
+    with pytest.raises(TypeError):
+        sample_type_checker({
+                'Sample ID': 'Test String Here',
+                'Sample Type': 'blank',
+                'Units': 'ug/ml',
+                'Limit': 23,
+                'Appearance': 23,
+                'Analyte': 'Test String Here',
+                'Analyte RT': 2.10,
+                'Analyte Result': 0.12,
+                'Other-Peaks': None,
+            })
 
 
-# Tests on if SystemExit is raised if a list entry for other peaks is not comma seperated and thus is a long string
-def test_get_sample_data_Other_Peaks_is_not_comma_sep():
-    with pytest.raises(SystemExit):
-        get_sample_data(get_ws_for_test("./test_spreadsheets/4-Cleaning Samples Template.xlsx"))
+def test_sample_analyte_checker():
+    with pytest.raises(TypeError):
+        sample_type_checker({
+                'Sample ID': 'Test String Here',
+                'Sample Type': 'blank',
+                'Units': 'ug/ml',
+                'Limit': 23,
+                'Appearance': 'pass',
+                'Analyte': None,
+                'Analyte RT': 2.10,
+                'Analyte Result': 0.12,
+                'Other-Peaks': None,
+            })
 
 
-# Tests if a SystemExit is raised on if one of the seperated values for a string insert for other peaks is non-numerical
-def test_get_sample_data_Other_Peaks_is_string():
-    with pytest.raises(SystemExit):
-        get_sample_data(get_ws_for_test("./test_spreadsheets/5-Cleaning Samples Template.xlsx"))
+def test_sample_ar_rt_checker():
+    with pytest.raises(TypeError):
+        sample_type_checker({
+                'Sample ID': 'Test String Here',
+                'Sample Type': 'blank',
+                'Units': 'ug/ml',
+                'Limit': 23,
+                'Appearance': 'pass',
+                'Analyte': 'Test string here',
+                'Analyte RT': 'THIS SHOULD RAISE A ERROR',
+                'Analyte Result': 0.12,
+                'Other-Peaks': None,
+            })
 
 
-# Tests if program gives SystemExit on if a non-numerical value is given for APQL
-def test_get_APQL_string():
-    with pytest.raises(SystemExit):
-        get_APQL(get_ws_for_test("./test_spreadsheets/6-Cleaning Samples Template.xlsx"))
+def test_sample_ar_cc_checker():
+    with pytest.raises(TypeError):
+        sample_type_checker({
+                'Sample ID': 'Test String Here',
+                'Sample Type': 'blank',
+                'Units': 'ug/ml',
+                'Limit': 23,
+                'Appearance': 'pass',
+                'Analyte': 'Test string here',
+                'Analyte RT': 2.22,
+                'Analyte Result': 'THIS SHOULD RAISE AN ERROR',
+                'Other-Peaks': None,
+            })
 
 
-if __name__ == "__main__":
+def test_sample_other_checker():
+    with pytest.raises(TypeError):
+        sample_type_checker({
+                'Sample ID': 'Test String Here',
+                'Sample Type': 'blank',
+                'Units': 'ug/ml',
+                'Limit': 23,
+                'Appearance': 'pass',
+                'Analyte': 'Test string here',
+                'Analyte RT': 2.22,
+                'Analyte Result': 34,
+                'Other-Peaks': 'THIS SHOULD RAISE AN ERROR',
+            })
+[
+        {
+            'Sample ID': '100041567 LC80277',
+            'Sample Type': 'blank',
+            'Units': 'ug/ml', 'Limit': 1.11,
+            'Appearance': 'pass',
+            'Analyte': 'A-162166.0',
+            'Analyte RT': 2.12,
+            'Analyte Result': 20.222,
+            'Other-Peaks': '(2.11, 0.13), (3.25, 0.25)'
+        },
+        {
+            'Sample ID': '2',
+            'Sample Type': 'blank',
+            'Units': 'ug/100cm2',
+            'Limit': 34,
+            'Appearance': 'pass',
+            'Analyte': 'A-162166.0',
+            'Analyte RT': 2.12,
+            'Analyte Result': 10,
+            'Other-Peaks': '(3.46, 2.99)'
+        },
+        {
+            'Sample ID': '3',
+            'Sample Type': 'sample',
+            'Units': 'ug/ml',
+            'Limit': 2.12,
+            'Appearance': 'fail',
+            'Analyte': 'A-162166.0',
+            'Analyte RT': 2.12,
+            'Analyte Result': 10,
+            'Other-Peaks': None
+        }
+]
+
+if __name__ == '__main__':
     main()
