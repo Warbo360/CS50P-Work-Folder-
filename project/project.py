@@ -5,11 +5,11 @@ from statement_gen_lib import state_gen
 
 
 def main():
-    if len(sys.argv) == 2:
-        # print((sample_list_checker(get_sample_data(get_ws(sys.argv[1])))))
-        print(get_sample_data(get_ws(sys.argv[1])))
+    if len(sys.argv) == 3:
         print('\n', state_gen(sample_list_checker(get_sample_data(get_ws(sys.argv[1])))), end='')
-    elif len(sys.argv) > 2:
+        with open(f'{sys.argv[2]}', 'w') as file:
+            file.write(f'\n{state_gen(sample_list_checker(get_sample_data(get_ws(sys.argv[1]))))}')
+    elif len(sys.argv) > 3:
         sys.exit('Please only link one file path at a time.')
     else:
         sys.exit('No file path given.')

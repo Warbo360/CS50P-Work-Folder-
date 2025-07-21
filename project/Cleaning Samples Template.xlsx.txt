@@ -1,0 +1,37 @@
+
+, 100041567 LC80277 Blank
+Appearance and Color: Clear and colorless. Reported as "Pass".
+A-162166.0: Detected. RT 2.12 min = 20.22ug/ml. Reported as "Fail".
+Other Peaks: Detected. 2.11 min = < 1.11 ug/ml (APQL). 3.25 min = < 1.11 ug/ml (APQL). 
+Total(A-162166.0 + Other Peak(s)):20.222 ug/ml + < 1.11 ug/ml + < 1.11 ug/ml = < 22.442 ug/ml. 
+
+2 Blank
+Appearance and Color: Clear and colorless. Reported as "Pass".
+A-162166.0: Not detected. Reported as "Pass".
+Other Peaks: Detected. 3.46 min = < 34 ug/100cm2 (APQL). 
+Total Other Peak(s): < 34 ug/100cm2. Which is NMT than 400 ug/100cm2. Reported as "Pass".
+
+3
+Appearance and Color: not clear and/or more intensely colored than blank sample(s). Reported as "Fail".
+A-162166.0: Detected. RT 2.12 min = 10.00ug/ml. Reported as "10 ug/ml".
+Other Peak(s): Not detected.
+Total(A-162166.0 and Other Peak(s)): 10 ug/ml.
+
+4
+Appearance and Color: not clear and/or more intensely colored than blank sample(s). Reported as "Fail".
+A-162166.0: Not detected. Reported as "< 0.82 ug/100cm2 (APQL)".
+Other Peak(s): Not detected.
+Total Other Peak(s): Not detected. Reported as "Pass". 
+
+5
+Appearance and Color: Clear and not more intensely colored than blank sample(s). Reported as "Pass".
+A-162166.0: Not detected. Reported as "< 20.11 ug/ml (APQL)".
+Other Peak(s): Not detected.
+Total(A-162166.0 and Other Peak(s)): 20.11 ug/ml.
+
+6
+Appearance and Color: Clear and not more intensely colored than blank sample(s). Reported as "Pass".
+A-162166.0: Not detected. Reported as "< 20.22 ug/ml (APQL)".
+Other Peak(s): Not detected.
+Total(A-162166.0 and Other Peak(s)): 20.22 ug/ml.
+

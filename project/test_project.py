@@ -24,7 +24,6 @@ def main():
     test_sample_ar_cc_checker()
     test_sample_other_checker_string()
     test_sample_other_checker_int()
-    ...
 
 
 def test_get_ws():
