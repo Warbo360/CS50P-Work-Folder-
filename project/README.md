@@ -1,5 +1,5 @@
 # GMP Cleaning Sample Summary Generator
-#### Video Demo: https://youtu.be/Sq_S1Fzg-ms
+#### [Video Demo](https://youtu.be/Sq_S1Fzg-ms)
 #### Description:
 
 This program is designed for reading of standardized spreadsheet files
